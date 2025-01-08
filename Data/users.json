@@ -1,0 +1,34 @@
+[
+  {
+    "username": "mirko_d",
+    "password": "pass123",
+    "nsgoKartica": {
+      "id": 1234,
+      "datumOd": "22.12.2024",
+      "datumDo": "22.01.2025",
+      "raspolozivaSredstva": 500.0,
+      "voziloAktivno": {
+        "id": 101,
+        "cenaPoSatu": 20.0,
+        "maxTezina": 150,
+        "stanje": "Bez_Ostecenja",
+        "zauzeto": false
+      }
+    }
+  },
+  {
+    "username": "tijana_p",
+    "password": "pass123",
+  },
+  {
+    "username": "marko_m",
+    "password": "sifra",
+    "vozila": {
+      "id": 202,
+      "cenaPoSatu": 30.0,
+      "maxTezina": 200,
+      "stanje": "Bez_Ostecenja",
+        "zauzeto": true
+    }
+  }
+]

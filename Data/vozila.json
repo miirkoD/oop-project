@@ -1,0 +1,50 @@
+[
+    {
+        "tip": "bicikl",
+        "id": 1,
+        "vlasnik": "Vlasnik1",
+        "cenaPoSatu": 200,
+        "velicinaTockova": 26,
+        "maksimalnaTezina": 120,
+        "stanje": "Bez_Ostecenja",
+        "zauzeto": false,
+        "brojBrzina": 18,
+        "visina": 110
+    },
+    {
+        "tip": "bicikl",
+        "id": 202,
+        "vlasnik": "marko_m",
+        "cenaPoSatu": 150,
+        "velicinaTockova": 24,
+        "maksimalnaTezina": 100,
+        "stanje": "Bez_Ostecenja",
+        "zauzeto": false,
+        "brojBrzina": 21,
+        "visina": 105
+    },
+    {
+        "tip": "trotinet",
+        "id": 3,
+        "vlasnik": "Vlasnik1",
+        "cenaPoSatu": 300,
+        "velicinaTockova": 10,
+        "maksimalnaTezina": 100,
+        "stanje": "Malo_Ostecenje",
+        "zauzeto": false,
+        "maksimalnaBrzina": 25,
+        "trajanjeBaterije": 4
+    },
+    {
+        "tip": "trotinet",
+        "id": 4,
+        "vlasnik": "Vlasnik3",
+        "cenaPoSatu": 250,
+        "velicinaTockova": 8,
+        "maksimalnaTezina": 90,
+        "stanje": "Veliko_Ostecenje",
+        "zauzeto": true,
+        "maksimalnaBrzina": 20,
+        "trajanjeBaterije": 3.5
+    }
+]

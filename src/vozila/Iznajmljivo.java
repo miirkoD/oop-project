@@ -1,6 +1,6 @@
 package vozila;
 
 public interface Iznajmljivo {
-	//unajmi()
-	//vrati()
+	void unajmi();
+	void vrati();
 }

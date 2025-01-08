@@ -1,0 +1,3 @@
+mirko_d;pass123;Vlasnik;
+pera_p;pass123;Serviser;
+zika_z;pass123;Iznajmljivac;
