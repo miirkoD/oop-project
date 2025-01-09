@@ -10,4 +10,6 @@ public abstract class Korisnik {
 		this.password=password;
 	}
 	
+	//pretraga vozila po tipu, po zauzetosti
+	
 }

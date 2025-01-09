@@ -27,4 +27,8 @@ abstract public class Vozilo {
 	public void postaviNaSlobodno() {
 		this.zauzeto=false;
 	}
+	
+	public boolean isZauzeto() {
+		return this.zauzeto;
+	}
 }

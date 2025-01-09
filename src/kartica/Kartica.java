@@ -52,6 +52,14 @@ public class Kartica {
 	public double getRaspolozivaSredstva() {
 		return raspolozivaSredstva;
 	}
+	//metoda za vracanje sredstava stavljena u klasu kartica
+	public double dopunaSredstava(double sredstva) {
+		double trenutnoStanje=this.raspolozivaSredstva;
+		if(sredstva<0.0) {
+			trenutnoStanje+=sredstva;
+		}
+		return trenutnoStanje;
+	}
 
 	
 }

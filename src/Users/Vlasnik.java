@@ -11,4 +11,6 @@ public class Vlasnik extends Korisnik{
 		super(username,password);
 		
 	}
+	
+	//stavljanje vozila van upotrebe
 }

@@ -21,7 +21,7 @@ import vozila.Vozilo;
 
 public class Platforma {
 	private Korisnik korisnik;
-	private List <Vozilo> dostupnaVozila;
+	//private List <Vozilo> dostupnaVozila;
 	private String naziv;
 	private String korisnici="../Data/users.txt";
 
@@ -198,5 +198,20 @@ public class Platforma {
 		}
 		return dostupnaVozila;
 	}
+
+	public void slobodnaVozila(List<Vozilo> vozila) {
+		int brojSlobodnihVozila=0;
+		
+		for(Vozilo v : vozila) {
+			if(!v.isZauzeto()) {
+				System.out.println(v);
+				brojSlobodnihVozila++;
+			}
+		}
+		if(brojSlobodnihVozila==0) {
+			System.out.println("Trenutno nemamo slobodnih vozila");
+		}
+	}
+	
 }
 
