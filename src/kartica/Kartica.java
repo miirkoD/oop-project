@@ -19,7 +19,6 @@ public class Kartica {
 	private Vozilo voziloAktivno;
 	private List<Najam> istrorijaIznajmljivanja;
 	
-	
 	public Kartica(int id, Iznajmljivac iznajmljivac, double raspolozivaSredstva) {
 		this.id=id;
 		this.iznajmljivac=iznajmljivac;
@@ -27,13 +26,11 @@ public class Kartica {
 		KreirajDatume();
 	}
 	
-	
 	public void KreirajDatume() {
 		LocalDate danas=LocalDate.now();
 		datumOd = danas;
 		datumDo=danas.plusMonths(1);
 	}
-	
 	
 	public boolean jeAktivna() {
 		DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd.mm.yyyy");

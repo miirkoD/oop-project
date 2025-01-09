@@ -11,12 +11,20 @@ abstract public class Vozilo {
 	private Stanje stanje;
 	private boolean zauzeto;
 	
-	public Vozilo(int id, Vlasnik vlasnik, double cenaPoSatu, double maxTezina,Stanje stanje, boolean zauzeto) {
+	public Vozilo(int id, Vlasnik vlasnik, double cenaPoSatu, double maxTezina,Stanje stanje) {
 		this.id=id;
 		this.vlasnik=vlasnik;
 		this.cenaPoSatu=cenaPoSatu;
 		this.maxTezina=maxTezina;
 		this.stanje=stanje;
-		this.zauzeto=zauzeto;
+		this.zauzeto=false;
+	}
+	
+	public void postaviNaZauzeto() {
+		this.zauzeto=true;
+	}
+	
+	public void postaviNaSlobodno() {
+		this.zauzeto=false;
 	}
 }

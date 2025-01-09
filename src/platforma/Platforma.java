@@ -1,5 +1,10 @@
 package platforma;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.io.File;
@@ -8,11 +13,15 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
 import Users.Korisnik;
+import Users.Vlasnik;
+import enumi.Stanje;
+import vozila.Bicikl;
+import vozila.Trotinet;
 import vozila.Vozilo;
 
 public class Platforma {
 	private Korisnik korisnik;
-	//private Vozilo dostupnoVozilo;
+	private List <Vozilo> dostupnaVozila;
 	private String naziv;
 	private String korisnici="../Data/users.txt";
 
@@ -129,6 +138,65 @@ public class Platforma {
 		inputScanner.close();
 	}
 
-	
+	public List<Vozilo> ucitajVozila() {
+		ArrayList<Vozilo> dostupnaVozila = new ArrayList<>();
+		
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder =dbFactory.newDocumentBuilder();
+			
+			File vozilaFile=new File("../Data/vozila.xml");
+			Document dokument=dBuilder.parse(vozilaFile);
+			
+			dokument.getDocumentElement().normalize();
+			
+			NodeList vozilaList=dokument.getElementsByTagName("vozilo");
+			
+			for(int i=0;i<vozilaList.getLength();i++) {
+				Node vozilaNode=vozilaList.item(i);
+				
+				if(vozilaNode.getNodeType()==Node.ELEMENT_NODE) {
+					Element voziloElement =(Element) vozilaNode;
+					
+					int id=Integer.parseInt(voziloElement.getElementsByTagName("id").item(0).getTextContent());
+					double cenaPoSatu=Double.parseDouble(voziloElement.getElementsByTagName("cenaPoSatu").item(0).getTextContent());
+					double maxTezina=Double.parseDouble(voziloElement.getElementsByTagName("maxTezina").item(0).getTextContent());
+					Stanje stanje=Stanje.valueOf(voziloElement.getElementsByTagName("stanje").item(0).getTextContent());
+					boolean zauzeto= Boolean.parseBoolean(voziloElement.getElementsByTagName("zauzeto").item(0).getTextContent());
+					
+					if(zauzeto) {
+						continue;
+					}
+					
+					Element vlasnikElement =(Element) voziloElement.getElementsByTagName("vlasnik").item(0);
+					String vlasnikUsername=vlasnikElement.getElementsByTagName("username").item(0).getTextContent();
+					String vlasnikPassword = vlasnikElement.getElementsByTagName("password").item(0).getTextContent();
+					Vlasnik vlasnik= new Vlasnik(vlasnikUsername,vlasnikPassword);
+					//posle staviti da poziva funkciju koja proverava username iz users.xml
+					
+					String tip=voziloElement.getElementsByTagName("tip").item(0).getTextContent();
+					Vozilo vozilo=null;
+					
+					if("bicikl".equalsIgnoreCase(tip)) {
+						int brojBrzina=Integer.parseInt(voziloElement.getElementsByTagName("brojBrzina").item(0).getTextContent());
+						int visina=Integer.parseInt(voziloElement.getElementsByTagName("visina").item(0).getTextContent());
+						vozilo=new Bicikl(id,vlasnik,cenaPoSatu,maxTezina,stanje,brojBrzina,visina);
+					}
+					else if("trotinet".equalsIgnoreCase(tip)) {
+						int maxBrzina=Integer.parseInt(voziloElement.getElementsByTagName("maxBrzina").item(0).getTextContent());
+						double trajanjeBaterije=Double.parseDouble(voziloElement.getElementsByTagName("trajanjeBaterije").item(0).getTextContent());
+						vozilo=new Trotinet(id,vlasnik,cenaPoSatu,maxTezina,stanje,maxBrzina,trajanjeBaterije);
+					}
+					
+					if(vozilo!=null) {
+						dostupnaVozila.add(vozilo);
+					}
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dostupnaVozila;
+	}
 }
 

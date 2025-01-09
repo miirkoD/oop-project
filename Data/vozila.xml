@@ -2,10 +2,12 @@
     <vozilo>
         <tip>bicikl</tip>
         <id>1</id>
-        <vlasnik>marko_m</vlasnik>
+        <vlasnik>
+            <username>marko_m</username>
+            <password>pass123</password>
+        </vlasnik>
         <cenaPoSatu>200</cenaPoSatu>
-        <velicinaTockova>26</velicinaTockova>
-        <maksimalnaTezina>120</maksimalnaTezina>
+        <maxTezina>120</maxTezina>
         <stanje>Bez_Ostecenja</stanje>
         <zauzeto>false</zauzeto>
         <brojBrzina>18</brojBrzina>
@@ -14,10 +16,12 @@
     <vozilo>
         <tip>bicikl</tip>
         <id>202</id>
-        <vlasnik>marko_m</vlasnik>
+        <vlasnik>
+            <username>marko_m</username>
+            <password>pass123</password>
+        </vlasnik>
         <cenaPoSatu>150</cenaPoSatu>
-        <velicinaTockova>24</velicinaTockova>
-        <maksimalnaTezina>100</maksimalnaTezina>
+        <maxTezina>100</maxTezina>
         <stanje>Bez_Ostecenja</stanje>
         <zauzeto>false</zauzeto>
         <brojBrzina>21</brojBrzina>
@@ -26,25 +30,29 @@
     <vozilo>
         <tip>trotinet</tip>
         <id>3</id>
-        <vlasnik>marko_m</vlasnik>
+        <vlasnik>
+            <username>marko_m</username>
+            <password>pass123</password>
+        </vlasnik>
         <cenaPoSatu>300</cenaPoSatu>
-        <velicinaTockova>10</velicinaTockova>
-        <maksimalnaTezina>100</maksimalnaTezina>
+        <maxTezina>100</maxTezina>
         <stanje>Malo_Ostecenje</stanje>
         <zauzeto>false</zauzeto>
-        <maksimalnaBrzina>25</maksimalnaBrzina>
+        <maxBrzina>25</maxBrzina>
         <trajanjeBaterije>4</trajanjeBaterije>
     </vozilo>
     <vozilo>
         <tip>trotinet</tip>
         <id>4</id>
-        <vlasnik>marko_m</vlasnik>
+        <vlasnik>
+            <username>marko_m</username>
+            <password>pass123</password>
+        </vlasnik>
         <cenaPoSatu>250</cenaPoSatu>
-        <velicinaTockova>8</velicinaTockova>
-        <maksimalnaTezina>90</maksimalnaTezina>
+        <maxTezina>90</maxTezina>
         <stanje>Veliko_Ostecenje</stanje>
         <zauzeto>true</zauzeto>
-        <maksimalnaBrzina>20</maksimalnaBrzina>
+        <maxBrzina>20</maxBrzina>
         <trajanjeBaterije>3.5</trajanjeBaterije>
     </vozilo>
 </vozila>

@@ -1,12 +1,14 @@
 package Users;
 
+import java.util.List;
+
 import vozila.Vozilo;
 
 public class Vlasnik extends Korisnik{
-	private Vozilo vozila;
+	private List <Vozilo> vozila;
 	
-	public Vlasnik(String username,String password,Vozilo vozila) {
+	public Vlasnik(String username,String password) {
 		super(username,password);
-		this.vozila=vozila;
+		
 	}
 }
