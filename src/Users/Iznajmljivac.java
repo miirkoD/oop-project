@@ -1,12 +1,14 @@
 package Users;
 
 import java.util.List;
+import java.util.Scanner;
 
 import kartica.Kartica;
 import najmovi.Najam;
+import vozila.Iznajmljivo;
 import vozila.Vozilo;
 
-public class Iznajmljivac extends Korisnik {
+public class Iznajmljivac extends Korisnik implements Iznajmljivo{
 	private Kartica nsgoKartica;
 	
 	public Iznajmljivac(String username,String password,Kartica nsgoKartica) {
@@ -27,17 +29,47 @@ public class Iznajmljivac extends Korisnik {
 		}
 		
 	}
-	//kreirati funkciju iznajmljivanje vozila
-	//public void iznajmiVozilo(List<Vozilo>slobodnaVozila){   izvuci kod iz funkcije slobodnaVozila 
-	//ako je vozilo slobodno ispisati ga- podesiti da kako ce se vozila ispisivati(id ,ime vozila, max brzina/broj brzina, max tezina)
-	//Scanner odabirVozila = new Scanner(System.in);
-	//int idVozila=odabirVozila.nextLine();
-	//
-	//}
+	
+	@Override
+	public void unajmi(List<Vozilo>slobodnaVozila){//izvuci kod iz funkcije slobodnaVozila 
+		Scanner odabirVozila=new Scanner(System.in);
+		int brojVozila=0;
+		
+		if(slobodnaVozila.isEmpty()) {
+			System.out.println("Trenutno nema slobodnih vozila!");
+			return;
+		}
+		
+		System.out.println("Odaberite vozilo koje zelite da iznajmite");
+		for(Vozilo v: slobodnaVozila) {
+			brojVozila++;
+			System.out.println(brojVozila +". "+v.getCenaPoSatu()+v.getMaxTezina());
+		}
+		int odabranBroj=odabirVozila.nextInt();
+		
+		if(odabranBroj >1 &&odabranBroj<=slobodnaVozila.size()) {
+			Vozilo odabranoVozilo=slobodnaVozila.get(odabranBroj-1);
+			odabranoVozilo.postaviNaZauzeto();
+			System.out.println("Odabrali ste vozilo: "+odabranoVozilo);
+			this.nsgoKartica.isVoziloAktivno(odabranoVozilo);
+		}else {
+			System.out.println("Neispravan unos pokusajte opet!");
+			unajmi(slobodnaVozila);
+		}
+}
+	
+	public boolean isActive() {
+		return false;
+	}
+	
+	
+	public void vrati() {
+		
+	}
 			
 	//kreirati funkciju za vracanje vozila
 			
-	//dopuna sredstava na kartici
+	//omoguciti da korisnik koji je iznajmljivac moze da dodaje sredstva u metodi meni za korisnike
 			
-			//prikaz istorije iznajmljivanja
+	//prikaz istorije iznajmljivanja
 }

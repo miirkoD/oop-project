@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 import Users.Iznajmljivac;
 import vozila.Vozilo;
@@ -19,10 +20,11 @@ public class Kartica {
 	private Vozilo voziloAktivno;
 	private List<Najam> istrorijaIznajmljivanja;
 	
-	public Kartica(int id, Iznajmljivac iznajmljivac, double raspolozivaSredstva) {
+	public Kartica(int id, Iznajmljivac iznajmljivac) {
 		this.id=id;
 		this.iznajmljivac=iznajmljivac;
-		this.raspolozivaSredstva=raspolozivaSredstva; 
+		this.raspolozivaSredstva=0.0; 
+		this.voziloAktivno=null;
 		KreirajDatume();
 	}
 	
@@ -42,6 +44,21 @@ public class Kartica {
 			System.out.println("Greska prilikom parsiranja datuma: "+ e.getMessage());
 			return false;
 		}
+		
+	}
+	
+	public void isVoziloAktivno(Vozilo v) {
+		//Scanner vratiInput=new Scanner(System.in);
+		if(this.voziloAktivno==null) {
+			System.out.println("Nema aktivnih vozila na ovom nalogu");
+			this.voziloAktivno=v;
+		}else {
+			System.out.println("Trenutno ne mozete iznajmiti vozilo jer niste vratili prethodno!");
+			//System.out.println("Da li zelite da vratite vozilo? \n 1.Da \n 2.Ne");
+		}
+	}
+	
+	public void dodajUIstrotijuVozila() {
 		
 	}
 	
