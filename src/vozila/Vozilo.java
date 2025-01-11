@@ -3,6 +3,7 @@ package vozila;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,6 +33,12 @@ abstract public class Vozilo {
 		this.zauzeto=false;
 	}
 	
+	
+	public int getId() {
+		return this.id;
+	}
+
+
 	public void postaviNaZauzeto() {
 		this.zauzeto=true;
 	}
@@ -114,7 +121,6 @@ abstract public class Vozilo {
 	}
 	
 	public List<Vozilo> slobodnaVozila(List<Vozilo> vozila) {
-		//int brojSlobodnihVozila=0;
 		ArrayList<Vozilo>slobodnaVozilaList=new ArrayList<>();
 		for(Vozilo v : vozila) {
 			if(v.isZauzeto()==false) {
@@ -125,6 +131,12 @@ abstract public class Vozilo {
 //			System.out.println("Trenutno nemamo slobodnih vozila");
 //		}
 		return slobodnaVozilaList;
+	}
+	//pretraga se moze vrsiti preko tipa, zauzetorsti, ili po servisu
+	public void pretragaVozila() {
+		Scanner pretragaInput=new Scanner(System.in);
+		System.out.println("Izaberite nacin na koji zelite da pretrazite vozilo");
+		System.out.println("1. preko tipa vozila /n" +"2. Preko zauzetosti /n" + "3. Po servisu");
 	}
 	
 	

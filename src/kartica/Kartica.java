@@ -18,7 +18,7 @@ public class Kartica {
 	private LocalDate datumDo;
 	private double raspolozivaSredstva;
 	private Vozilo voziloAktivno;
-	private List<Najam> istrorijaIznajmljivanja;
+	private List<Najam> istorijaIznajmljivanja;
 	
 	public Kartica(int id, Iznajmljivac iznajmljivac) {
 		this.id=id;
@@ -28,10 +28,18 @@ public class Kartica {
 		KreirajDatume();
 	}
 	
+	public List<Najam> getIstorijaIznajmljivanja() {
+		return istorijaIznajmljivanja;
+	}
+
+	public void setIstorijaIznajmljivanja(List<Najam> istorijaIznajmljivanja) {
+		this.istorijaIznajmljivanja = istorijaIznajmljivanja;
+	}
+
 	public void KreirajDatume() {
 		LocalDate danas=LocalDate.now();
 		datumOd = danas;
-		datumDo=danas.plusMonths(1);
+		//datumDo=danas.plusMonths(1);
 	}
 	
 	public boolean jeAktivna() {
@@ -57,25 +65,22 @@ public class Kartica {
 			//System.out.println("Da li zelite da vratite vozilo? \n 1.Da \n 2.Ne");
 		}
 	}
-	
-	public void dodajUIstrotijuVozila() {
-		
-	}
-	
+
 	public void setVoziloAktivno(Vozilo vozilo) {
 		this.voziloAktivno=vozilo;
+	}
+
+	public LocalDate getDatumOd() {
+		return datumOd;
 	}
 
 	public double getRaspolozivaSredstva() {
 		return raspolozivaSredstva;
 	}
+	
 	//metoda za vracanje sredstava stavljena u klasu kartica
-	public double dopunaSredstava(double sredstva) {
-		double trenutnoStanje=this.raspolozivaSredstva;
-		if(sredstva<0.0) {
-			trenutnoStanje+=sredstva;
-		}
-		return trenutnoStanje;
+	public double setSredstava(double sredstva) {
+		return this.raspolozivaSredstva+=sredstva;
 	}
 
 	

@@ -1,0 +1,39 @@
+<korisnici>
+  <korisnik>
+    <username>mirko_d</username>
+    <password>pass123</password>
+    <nsgoKartica>
+      <id>1234</id>
+      <datumOd>22.12.2024</datumOd>
+      <datumDo>22.01.2025</datumDo>
+      <raspolozivaSredstva>500.0</raspolozivaSredstva>
+      <voziloAktivno></voziloAktivno>
+    </nsgoKartica>
+  </korisnik>
+  <korisnik>
+    <username>tijana_p</username>
+    <password>pass123</password>
+  </korisnik>
+  <korisnik username="marko_m" password="sifra">
+    <vozila>
+      <vozilo>
+        <tip>bicikl</tip>
+        <id>1</id>
+        <cenaPoSatu>200</cenaPoSatu>
+        </vozilo>
+      <vozilo>
+        <tip>bicikl</tip>
+        <id>202</id>
+        <cenaPoSatu>150</cenaPoSatu>
+        </vozilo>
+      <vozilo>
+        <tip>trotinet</tip>
+        <id>3</id>
+        </vozilo>
+      <vozilo>
+        <tip>trotinet</tip>
+        <id>4</id>
+        </vozilo>
+    </vozila>
+  </korisnik>
+</korisnici>
