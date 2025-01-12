@@ -27,6 +27,14 @@ public class Kartica {
 		this.voziloAktivno=null;
 		KreirajDatume();
 	}
+	public Kartica(int id, Iznajmljivac iznajmljivac, LocalDate datumOd,LocalDate datoumDo, double raspolozivaSredstva,Vozilo voziloAktivno) {
+		this.id=id;
+		this.iznajmljivac=iznajmljivac;
+		this.datumOd=datumOd;
+		this.datumDo=datumDo;
+		this.raspolozivaSredstva=raspolozivaSredstva;
+		this.voziloAktivno=voziloAktivno;
+	}
 	
 	public List<Najam> getIstorijaIznajmljivanja() {
 		return istorijaIznajmljivanja;

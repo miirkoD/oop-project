@@ -27,10 +27,10 @@ import vozila.Vozilo;
 public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 	private Kartica nsgoKartica;
 
-	public Iznajmljivac(String username, String password, Kartica nsgoKartica) {
-		super(username, password);
-		this.nsgoKartica = nsgoKartica;
-	} 
+//	public Iznajmljivac(String username, String password, Kartica nsgoKartica) {
+//		super(username, password);
+//		this.nsgoKartica = nsgoKartica;
+//	} 
 	public Iznajmljivac(String username, String password) {
         super(username, password);
     }
@@ -56,6 +56,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 
 		if (slobodnaVozila.isEmpty()) {
 			System.out.println("Trenutno nema slobodnih vozila!");
+			odabirVozila.close();
 			return null;
 		}
 
@@ -86,6 +87,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		najamUDatoteku(najam);
 		//dodati istoriju kasnije
 		//this.nsgoKartica.
+		odabirVozila.close();
 		return najam;
 	}
 	

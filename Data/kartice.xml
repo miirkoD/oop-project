@@ -1,0 +1,10 @@
+<kartice>
+	<kartica>
+		<Iznajmljivac>mirko_d</Iznajmljivac>
+		<brojKartice>1234567890</brojKartice>
+		<datumKreiranja>31.12.2024</datumKreiranja>
+		<datumIsteka>31.12.2025</datumIsteka>
+		<raspolozivaSredstva>1000</raspolozivaSredstva>
+		<voziloAktivno>1</voziloAktivno>
+	</kartica>
+</kartice>
