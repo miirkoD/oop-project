@@ -1,7 +1,8 @@
 package najmovi;
 
-import java.time.LocalDate;
-import java.util.Date;
+//import java.time.LocalDate;
+import java.time.LocalDateTime;
+//import java.util.Date;
 import java.util.List;
 
 import Users.Iznajmljivac;
@@ -10,15 +11,15 @@ import enumi.DodatnaOprema;
 
 public class Najam {
 	private int id;
-	private LocalDate datumPocetka;
-	private LocalDate datumKraja;
+	private LocalDateTime datumPocetka;
+	private LocalDateTime datumKraja;
 	private Iznajmljivac iznajmljivac;
 	private Vozilo vozilo;
 	//dodatna oprema
 	private List<DodatnaOprema> dodatneOprema;
 	private boolean servis;
 	
-	public Najam(int id, LocalDate datumPocetka,LocalDate datumKraja, Iznajmljivac iznajmljivac, Vozilo vozilo,boolean servis) {
+	public Najam(int id, LocalDateTime datumPocetka,LocalDateTime datumKraja, Iznajmljivac iznajmljivac, Vozilo vozilo,boolean servis) {
 		this.id=id;
 		this.datumPocetka=datumPocetka;
 		this.datumKraja=datumKraja;

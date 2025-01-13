@@ -2,6 +2,8 @@ package Users;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -27,10 +29,10 @@ import vozila.Vozilo;
 public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 	private Kartica nsgoKartica;
 
-//	public Iznajmljivac(String username, String password, Kartica nsgoKartica) {
-//		super(username, password);
-//		this.nsgoKartica = nsgoKartica;
-//	} 
+	public Iznajmljivac(String username, String password, Kartica nsgoKartica) {
+		super(username, password);
+		this.nsgoKartica = nsgoKartica;
+	} 
 	public Iznajmljivac(String username, String password) {
         super(username, password);
     }
@@ -77,7 +79,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 				this.nsgoKartica.isVoziloAktivno(odabranoVozilo);
 				// popom kreirati novu metodu u kojoj bi prosledili najam i onda dodavali u
 				// listu istorija iznajmljivanja
-				najam = new Najam(odabranoVozilo.getId(), nsgoKartica.getDatumOd(), null, null, odabranoVozilo,false);
+				najam = new Najam(odabranoVozilo.getId(), this.datumIVremeTrenutno(), null, this, odabranoVozilo,false);
 				break;
 			} else {
 				System.out.println("Neispravan unos pokusajte opet!");
@@ -91,13 +93,24 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		return najam;
 	}
 	
+	public LocalDateTime datumIVremeTrenutno() {
+		LocalDateTime sadaVreme= LocalDateTime.now();
+		return sadaVreme;
+	}
+	
+	public String FormatirajVreme(LocalDateTime vreme) {
+		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd.MM.yyyy HH.mm");
+		String formiranoVreme=vreme.format(formatter);
+		return formiranoVreme;
+	}
+	
 	public void najamUDatoteku(Najam najam) {
 		try {
 			DocumentBuilderFactory dbFactory =DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder=dbFactory.newDocumentBuilder();
 			Document doc;
 			
-			File file=new File("../Data/najam.xml");
+			File file=new File("Data/najam.xml");
 			if(file.exists()) {
 				doc=dBuilder.parse(file);
 			}else {
@@ -118,6 +131,15 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return "Iznajmljivac {Korisnicko ime= '"+ getUsername()+ this.nsgoKartica.toString()+" }";
+	}
+	
+	public String tip() {
+		return "Iznajmljivac";
+	}
+
 	public void dodajUIstoriju(Najam n) {
 		
 	}

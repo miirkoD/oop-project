@@ -26,12 +26,13 @@ public class UpravljanjeVozilima {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder =dbFactory.newDocumentBuilder();
-			String putanjaDoDatoteke="../Data/vozila.xml";
+			String putanjaDoDatoteke="Data/vozila.xml";
 			File vozilaFile=new File(putanjaDoDatoteke);
 			
 			if(!vozilaFile.exists()) {
 				throw new XMLParseException ("Datoteka "+putanjaDoDatoteke+" ne postoji");
 			}
+			
 			Document dokument=dBuilder.parse(vozilaFile);
 			
 			dokument.getDocumentElement().normalize();
@@ -50,9 +51,9 @@ public class UpravljanjeVozilima {
 					Stanje stanje=Stanje.valueOf(voziloElement.getElementsByTagName("stanje").item(0).getTextContent());
 					boolean zauzeto= Boolean.parseBoolean(voziloElement.getElementsByTagName("zauzeto").item(0).getTextContent());
 					
-					if(zauzeto) {
-						continue;
-					}
+//					if(zauzeto) {
+//						continue;
+//					}
 					
 					Element vlasnikElement =(Element) voziloElement.getElementsByTagName("vlasnik").item(0);
 					String vlasnikUsername=vlasnikElement.getElementsByTagName("username").item(0).getTextContent();

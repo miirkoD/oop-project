@@ -16,6 +16,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,13 +34,13 @@ import vozila.UpravljanjeVozilima;
 import vozila.Vozilo;
 
 public class Platforma {
-	private Korisnik korisnikUlogovan;
+	private static Korisnik korisnikUlogovan;
 	// private List <Vozilo> dostupnaVozila;
 	// private String naziv;
 	// private String korisnici="../Data/users.xml";
 
-	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException, XMLParseException {
-		Platforma platforma = new Platforma();
+	public static void main(String[] args)
+			throws SAXException, IOException, ParserConfigurationException, XMLParseException {
 
 		Scanner inputScanner = new Scanner(System.in);
 
@@ -51,6 +52,7 @@ public class Platforma {
 
 		prijavaKorinsika(korisnickoIme, lozinka);
 
+		System.out.println("Ovo je ulogovani korisnik"+ korisnikUlogovan);
 		inputScanner.close();
 	}
 
@@ -60,8 +62,7 @@ public class Platforma {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(new File("../Data/korisnici.xml"));
-
+			Document doc = dBuilder.parse(new File("Data/users.xml"));
 			doc.getDocumentElement().normalize();
 
 			NodeList korisnikNodeList = doc.getElementsByTagName("korisnik");
@@ -75,23 +76,25 @@ public class Platforma {
 					String username = korisnikElement.getElementsByTagName("username").item(0).getTextContent();
 					String password = korisnikElement.getElementsByTagName("password").item(0).getTextContent();
 					String tipKorisnika = korisnikElement.getElementsByTagName("tipKorisnika").item(0).getTextContent();
+					//System.out.println(tipKorisnika);
 
-					Korisnik korisnik;
+					// Korisnik korisnik;
 
-					if (tipKorisnika == "iznajmljivac") {
+					if (tipKorisnika.equals("iznajmljivac")) {
 						Iznajmljivac iznajmljivac = new Iznajmljivac(username, password);
-						ucitaneKartice(username, iznajmljivac);
-//						korisnik=iznajmljivac;
+						Kartica k=ucitaneKartice(username, iznajmljivac);
+						iznajmljivac=new Iznajmljivac(username,password,k);
 						korisnici.add(iznajmljivac);
-					} else if (tipKorisnika == "vlasnik") {
+					} else if (tipKorisnika.equals("vlasnik")) {
 						Vlasnik vlasnik = new Vlasnik(username, password);
 						korisnici.add(vlasnik);
-					} else {
+					} else if (tipKorisnika.equals("serviser")) {
 						Serviser serviser = new Serviser(username, password);
 						korisnici.add(serviser);
+					} else {
+						System.out.println("Nepoznat korisnik " + tipKorisnika);
 					}
 
-					// korisnici.add(korisnik);
 				}
 			}
 		} catch (SAXException | IOException | ParserConfigurationException e) {
@@ -100,16 +103,16 @@ public class Platforma {
 		} catch (XMLParseException e) {
 			System.err.println("Greška pri čitanju XML datoteke: " + e.getMessage());
 		}
-		System.out.println(korisnici);
+		System.out.println("ovo su svi ucitani korisnici "+korisnici);//obrisati posle
 		return korisnici;
 	}
 
 	public static Kartica ucitaneKartice(String username, Iznajmljivac iznajmljivac) throws XMLParseException {
-		List<Kartica> karticeIznajmljivaca = new ArrayList<>();
+		// List<Kartica> karticeIznajmljivaca = new ArrayList<>();
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(new File("../Data/kartice.xml"));
+			Document doc = dBuilder.parse(new File("Data/kartice.xml"));
 
 			NodeList karticaList = doc.getElementsByTagName("kartica");
 
@@ -123,16 +126,26 @@ public class Platforma {
 
 					if (imeIznajmljivaca.equals(username)) {
 						int id = Integer.parseInt(karticaElement.getElementsByTagName("id").item(0).getTextContent());
-						LocalDate datumOd = LocalDate.parse(
+						LocalDateTime datumOd = LocalDateTime.parse(
 								karticaElement.getElementsByTagName("datumKreiranja").item(0).getTextContent(),
-								DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-						LocalDate datumDo = LocalDate.parse(
+								DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
+						LocalDateTime datumDo = LocalDateTime.parse(
 								karticaElement.getElementsByTagName("datumIsteka").item(0).getTextContent(),
-								DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+								DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
 						double raspolozivaSredstva = Double.parseDouble(
 								karticaElement.getElementsByTagName("raspolozivaSredstva").item(0).getTextContent());
-						int voziloAktivnoID = Integer.parseInt(
-								karticaElement.getElementsByTagName("voziloAktivno").item(0).getTextContent());
+						String voziloAktivnoIDString=karticaElement.getElementsByTagName("voziloAktivno").item(0).getTextContent();
+						int voziloAktivnoID=0;
+						if(voziloAktivnoIDString.isEmpty()||voziloAktivnoIDString.isBlank()) {
+							voziloAktivnoID=0;
+						}else {
+							try {
+							voziloAktivnoID = Integer.parseInt(voziloAktivnoIDString);	
+							}catch(NumberFormatException e){
+								System.err.println("Nije moguce pretvoriti "+voziloAktivnoIDString + " u broj");
+							}
+						}
+						
 						UpravljanjeVozilima upravljanjeVozilima = new UpravljanjeVozilima();
 						Vozilo voziloAktivno = upravljanjeVozilima.pronadjiVoziloPrekoID(voziloAktivnoID);
 						return new Kartica(id, iznajmljivac, datumOd, datumDo, raspolozivaSredstva, voziloAktivno);
@@ -148,30 +161,40 @@ public class Platforma {
 		return null;
 	}
 
-	public static void prijavaKorinsika(String username, String password) throws SAXException, IOException, ParserConfigurationException, XMLParseException {
-		List <Korisnik> korisnici=ucitajKorisnike();
-		for(Korisnik korisnik: korisnici) {
-			if(korisnik.getUsername().equals(username)&&korisnik.getPassword().equals(password)) {
-				System.out.print("Uspesno ulogovani");
+	public static void prijavaKorinsika(String username, String password)
+			throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+		List<Korisnik> korisnici = ucitajKorisnike();
+		for (Korisnik korisnik : korisnici) {
+			if (korisnik.getUsername().equals(username) && korisnik.getPassword().equals(password)) {
+				System.out.println("Uspesno ulogovani");
+				System.out.println("Dobrodosli, " + username);
+				korisnikUlogovan=korisnik;
+				meniZaKorisnika(korisnik);
 			}
 		}
 	}
 
-	public void meniZaKorisnika(String tipKorisnika, String username) {
-		System.out.println("Dobrodosli, " + username);
-		switch (tipKorisnika) {
-		case "Iznajmljivac":
-			System.out.println();
-			// Iznajmi vozilo -Kreiranje najma
-			// Vracanje vozila
-			break;
-		case "Vlasnik":
-			System.out.println();
-			break;
-		case "Serviser":
-			System.out.println();
-			break;
+	public static void meniZaKorisnika(Korisnik korisnik) {
+		Scanner inputScanner = new Scanner(System.in);
+		UpravljanjeVozilima upravljanjeVozilima = new UpravljanjeVozilima();
+		if (korisnik instanceof Iznajmljivac) {
+			System.out.println("1. Iznjami vozilo, 2. Vrati vozilo, 3. Odjavi se");
+			int brojOdabira = inputScanner.nextInt();
+			if (brojOdabira == 1) {
+				// iznajmi vozilo
+				try {
+					System.out.println("Ovo su sva Vozila "+upravljanjeVozilima.ucitajVozila());
+					List<Vozilo> svaVozila=upravljanjeVozilima.ucitajVozila();
+					List<Vozilo> slobodnaVozila=upravljanjeVozilima.slobodnaVozila(svaVozila);
+					System.out.println("Ovo su slobodna Vozila "+ slobodnaVozila);
+					((Iznajmljivac) korisnik).unajmi(slobodnaVozila);
+				} catch (XMLParseException e) {
+					e.printStackTrace();
+				}
+			}
+			// vrati vozilo
 		}
+		inputScanner.close();
 	}
 
 	public void odjavaKorisnika() {
@@ -183,8 +206,6 @@ public class Platforma {
 		Scanner inputScanner = new Scanner(System.in);
 
 		System.out.println("Registracija novog korisnika");
-
-		// System.out.println("Uneiste korisnicko ime");
 
 		String tipKorisnika = null;
 		boolean ispravanUnos = false;
@@ -213,8 +234,8 @@ public class Platforma {
 		} while (!ispravanUnos);
 
 		try {
-			//File file = new File(korisnici);
-			//boolean noviFajl = file.createNewFile();
+			// File file = new File(korisnici);
+			// boolean noviFajl = file.createNewFile();
 
 //			try (PrintWriter writer = new PrintWriter(new FileOutputStream(file, true))) {
 //				writer.println(username + ";" + password + ";" + tipKorisnika + ";");

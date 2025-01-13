@@ -1,6 +1,7 @@
 package kartica;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
@@ -14,8 +15,8 @@ import najmovi.Najam;
 public class Kartica {
 	private int id;
 	private Iznajmljivac iznajmljivac;
-	private LocalDate datumOd;
-	private LocalDate datumDo;
+	private LocalDateTime datumOd;
+	private LocalDateTime datumDo;
 	private double raspolozivaSredstva;
 	private Vozilo voziloAktivno;
 	private List<Najam> istorijaIznajmljivanja;
@@ -27,7 +28,7 @@ public class Kartica {
 		this.voziloAktivno=null;
 		KreirajDatume();
 	}
-	public Kartica(int id, Iznajmljivac iznajmljivac, LocalDate datumOd,LocalDate datoumDo, double raspolozivaSredstva,Vozilo voziloAktivno) {
+	public Kartica(int id, Iznajmljivac iznajmljivac, LocalDateTime datumOd,LocalDateTime datumDo, double raspolozivaSredstva,Vozilo voziloAktivno) {
 		this.id=id;
 		this.iznajmljivac=iznajmljivac;
 		this.datumOd=datumOd;
@@ -45,10 +46,11 @@ public class Kartica {
 	}
 
 	public void KreirajDatume() {
-		LocalDate danas=LocalDate.now();
+		LocalDateTime danas=LocalDateTime.now();
 		datumOd = danas;
-		//datumDo=danas.plusMonths(1);
+		datumDo=danas.plusYears(1);
 	}
+	
 	
 	public boolean jeAktivna() {
 		DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd.mm.yyyy");
@@ -63,14 +65,21 @@ public class Kartica {
 		
 	}
 	
+	public LocalDateTime getDatumDo() {
+		return datumDo;
+	}
+	@Override
+	public String toString() {
+		return "Kartica {Korisnik "+this.iznajmljivac.getUsername()+" Id kartice "+ this.id+"Vazi do "+this.datumDo;
+	}
+	
 	public void isVoziloAktivno(Vozilo v) {
 		//Scanner vratiInput=new Scanner(System.in);
 		if(this.voziloAktivno==null) {
-			System.out.println("Nema aktivnih vozila na ovom nalogu");
+			System.out.println("Prvo iznajmljivanje vozila na ovom nalogu");
 			this.voziloAktivno=v;
 		}else {
-			System.out.println("Trenutno ne mozete iznajmiti vozilo jer niste vratili prethodno!");
-			//System.out.println("Da li zelite da vratite vozilo? \n 1.Da \n 2.Ne");
+			this.voziloAktivno=v;
 		}
 	}
 
@@ -78,7 +87,7 @@ public class Kartica {
 		this.voziloAktivno=vozilo;
 	}
 
-	public LocalDate getDatumOd() {
+	public LocalDateTime getDatumOd() {
 		return datumOd;
 	}
 
