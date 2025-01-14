@@ -52,8 +52,8 @@ public class Kartica {
 	}
 	
 	
-	public boolean jeAktivna() {
-		DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+	public boolean jeAktivna() { //metoda koja vraca da li je kartica aktivna
+		DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd.MM.yyyy");
 		try {
 			LocalDate datumDoLocalDate=LocalDate.parse(datumDo.toString(),formatter);
 			return LocalDate.now().isBefore(datumDoLocalDate);

@@ -32,23 +32,13 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 	public Iznajmljivac(String username, String password, Kartica nsgoKartica) {
 		super(username, password);
 		this.nsgoKartica = nsgoKartica;
-	} 
-	public Iznajmljivac(String username, String password) {
-        super(username, password);
-    }
-	// kreirati metode koje su vezane za iznajmljivaca
-
-	public boolean validnaKartica(Kartica kartica) {
-		if (!kartica.jeAktivna()) {
-			System.out.println("Kartica nije aktivna");
-			return false;
-		} else if (kartica.getRaspolozivaSredstva() <= 0) {
-			System.out.println("Na kartici nema dovoljno sredstava");
-			return false;
-		} else {
-			return true;
-		}
 	}
+
+	public Iznajmljivac(String username, String password) {
+		super(username, password);
+	}
+
+	// kreirati metode koje su vezane za iznajmljivaca
 
 	@Override
 	public Najam unajmi(List<Vozilo> slobodnaVozila) {// izvuci kod iz funkcije slobodnaVozila
@@ -69,103 +59,119 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 				System.out.println(brojVozila + ". " + " Cena po satu " + v.getCenaPoSatu() + " Maksimalna tezina "
 						+ v.getMaxTezina());
 			}
-			
+
 			int odabranBroj = odabirVozila.nextInt();
-			
+
 			if (odabranBroj >= 1 && odabranBroj <= slobodnaVozila.size()) {
 				Vozilo odabranoVozilo = slobodnaVozila.get(odabranBroj - 1);
-				odabranoVozilo.setZauzeto(true);
-				System.out.println("Odabrali ste vozilo: " + odabranoVozilo);
-				this.nsgoKartica.isVoziloAktivno(odabranoVozilo);
-				// popom kreirati novu metodu u kojoj bi prosledili najam i onda dodavali u
-				// listu istorija iznajmljivanja
-				najam = new Najam(odabranoVozilo.getId(), this.datumIVremeTrenutno(), null, this, odabranoVozilo,false);
-				break;
+				odabranoVozilo.setZauzeto(true); // stavljanje da je vozilo zauzeto
+				if (odabranoVozilo.getCenaPoSatu() < this.nsgoKartica.getRaspolozivaSredstva()
+						&& this.nsgoKartica.jeAktivna()) {
+					System.out.println("Odabrali ste vozilo: " + odabranoVozilo);
+					this.nsgoKartica.isVoziloAktivno(odabranoVozilo);
+					// potom kreirati novu metodu u kojoj bi prosledili najam i onda dodavali u
+					// listu istorija iznajmljivanja
+					najam = new Najam(odabranoVozilo.getId(), this.datumIVremeTrenutno(), null, this, odabranoVozilo,
+							false);
+					break;
+				} else {
+					System.out.println("Greska proverite da li imate dovoljno sredstava ili vam kartica nije aktivna");
+				}
 			} else {
 				System.out.println("Neispravan unos pokusajte opet!");
 			}
 		}
 		najamUDatoteku(najam);
-		//dodati istoriju kasnije
+		// dodati istoriju kasnije
 		odabirVozila.close();
 		return najam;
 	}
-	
+
 	public LocalDateTime datumIVremeTrenutno() {
-		LocalDateTime sadaVreme= LocalDateTime.now();
+		LocalDateTime sadaVreme = LocalDateTime.now();
 		return sadaVreme;
 	}
-	
-	//ovo obrisati ako se ne koristi
-//	public String FormatirajVreme(LocalDateTime vreme) {
-//		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd.MM.yyyy HH.mm");
-//		String formiranoVreme=vreme.format(formatter);
-//		return formiranoVreme;
-//	}
-//	
+
+	// ovo obrisati ako se ne koristi
+	public String formatirajVreme(LocalDateTime vreme) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+		String formiranoVreme = vreme.format(formatter);
+		return formiranoVreme;
+	}
+
 	public void najamUDatoteku(Najam najam) {
 		try {
-			DocumentBuilderFactory dbFactory =DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder=dbFactory.newDocumentBuilder();
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc;
-			
-			File file=new File("Data/najam.xml");
-			if(file.exists()) {
-				doc=dBuilder.parse(file);
-			}else {
-				doc=dBuilder.newDocument();
-				Element rootElement=doc.createElement("najmovi");
+
+			File file = new File("Data/najam.xml");
+			if (file.exists()) {
+				doc = dBuilder.parse(file);
+			} else {
+				doc = dBuilder.newDocument();
+				Element rootElement = doc.createElement("najmovi");
 				doc.appendChild(rootElement);
 			}
-			
-			Element najamElement=doc.createElement("najam");
-			
-			Element tipVozilaElement =doc.createElement("tipVozila");
-			String tipVozila=najam.getVozilo().tipVozila();
+
+			Element najamElement = doc.createElement("najam");
+
+			Element korisnickoImeElement = doc.createElement("korisnickoIme");
+			String korisnickoIme = najam.getIznajmljivac().getUsername();
+			korisnickoImeElement.appendChild(doc.createTextNode(korisnickoIme));
+			najamElement.appendChild(korisnickoImeElement);
+
+			Element tipVozilaElement = doc.createElement("tipVozila");
+			String tipVozila = najam.getVozilo().tipVozila();
 			tipVozilaElement.appendChild(doc.createTextNode(tipVozila));
 			najamElement.appendChild(tipVozilaElement);
-			
-			Element idVozilaElement=doc.createElement("IdVozila");
-			String idVozilaString=String.valueOf(najam.getVozilo().getId());
+
+			Element idVozilaElement = doc.createElement("IdVozila");
+			String idVozilaString = String.valueOf(najam.getVozilo().getId());
 			idVozilaElement.appendChild(doc.createTextNode(idVozilaString));
 			najamElement.appendChild(idVozilaElement);
-			
-			Element cenaPoSatuElement=doc.createElement("cenaPoSatu");
-			String cenaPoSatuString=String.valueOf(najam.getVozilo().getCenaPoSatu());
+
+			Element cenaPoSatuElement = doc.createElement("cenaPoSatu");
+			String cenaPoSatuString = String.valueOf(najam.getVozilo().getCenaPoSatu());
 			cenaPoSatuElement.appendChild(doc.createTextNode(cenaPoSatuString));
 			najamElement.appendChild(cenaPoSatuElement);
-			
-			Element datumKreiranjaNajmaElement=doc.createElement("datumKreiranjNajma");
-			String datumKreiranjaNajmaString=String.valueOf(najam.getDatumPocetka());
+
+			Element datumKreiranjaNajmaElement = doc.createElement("datumKreiranjNajma");
+			String datumKreiranjaNajmaString = formatirajVreme(najam.getDatumPocetka());
 			datumKreiranjaNajmaElement.appendChild(doc.createTextNode(datumKreiranjaNajmaString));
 			najamElement.appendChild(datumKreiranjaNajmaElement);
-			
+
+			Element datumKrajaNajmaElement = doc.createElement("datumKrajaNajma");
+			String datumKrajaNajmaString = "";
+			datumKrajaNajmaElement.appendChild(doc.createTextNode(datumKrajaNajmaString));
+			najamElement.appendChild(datumKrajaNajmaElement);
+
 			doc.getDocumentElement().appendChild(najamElement);
-			
-			TransformerFactory transformerFactory=TransformerFactory.newInstance();
-			Transformer transformer=transformerFactory.newTransformer();
+
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
 			transformer.transform(new DOMSource(doc), new StreamResult(file));
-		}catch(ParserConfigurationException | TransformerException| IOException| SAXException e) {
+		} catch (ParserConfigurationException | TransformerException | IOException | SAXException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Iznajmljivac {Korisnicko ime= '"+ getUsername()+ this.nsgoKartica.toString()+" }";
+		return "Iznajmljivac {Korisnicko ime= '" + getUsername() + this.nsgoKartica.toString() + " }";
 	}
-	
+
 	public String tip() {
 		return "Iznajmljivac";
 	}
 
 	public void dodajUIstoriju(Najam n) {
-		
+
 	}
 
 	// kreirati funkciju za vracanje vozila
 	public void vrati(Vozilo v) {
-		
+
 	}
 
 	// prikaz istorije iznajmljivanja

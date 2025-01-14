@@ -41,18 +41,37 @@ public class Platforma {
 
 	public static void main(String[] args)
 			throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+		// Scanner izbor1Scanner=new Scanner(System.in);
+		System.out.println("Dobrodosli u aplikaciju za iznajmljivanje trotineta i bicikala!");
+
 
 		Scanner inputScanner = new Scanner(System.in);
 
-		System.out.println("Unesite korisnicko ime: ");
-		String korisnickoIme = inputScanner.nextLine();
+		int izbor = 0;
 
-		System.out.println("Unesite lozinku: ");
-		String lozinka = inputScanner.nextLine();
-
-		prijavaKorinsika(korisnickoIme, lozinka);
-
-		//System.out.println("Ovo je ulogovani korisnik"+ korisnikUlogovan);
+		while (izbor != 1 && izbor != 2) {
+			System.out.println("\n 1. Prijava");
+			System.out.println(" 2.Registracija");
+			try {
+				izbor = inputScanner.nextInt();
+			} catch (Exception e) {
+				System.out.println("Unesite broj 1 ili 2.");
+				inputScanner.nextLine();
+				continue;
+			}
+			switch (izbor) {
+			case 1:
+				prijavaKorinsika(inputScanner);
+				break;
+			case 2:
+				registracijaKorisnika(inputScanner); // registraciju treba popraviti
+				break;
+			default:
+				System.out.println("Pogresan unos, probajte opet");
+			}
+		}
+		// System.out.println("Ovo je ulogovani korisnik"+ korisnikUlogovan);//provera
+		// da li su svi korisnici tu
 		inputScanner.close();
 	}
 
@@ -76,14 +95,14 @@ public class Platforma {
 					String username = korisnikElement.getElementsByTagName("username").item(0).getTextContent();
 					String password = korisnikElement.getElementsByTagName("password").item(0).getTextContent();
 					String tipKorisnika = korisnikElement.getElementsByTagName("tipKorisnika").item(0).getTextContent();
-					//System.out.println(tipKorisnika);
+					// System.out.println(tipKorisnika);
 
 					// Korisnik korisnik;
 
 					if (tipKorisnika.equals("iznajmljivac")) {
 						Iznajmljivac iznajmljivac = new Iznajmljivac(username, password);
-						Kartica k=ucitaneKartice(username, iznajmljivac);
-						iznajmljivac=new Iznajmljivac(username,password,k);
+						Kartica k = ucitaneKartice(username, iznajmljivac);
+						iznajmljivac = new Iznajmljivac(username, password, k);
 						korisnici.add(iznajmljivac);
 					} else if (tipKorisnika.equals("vlasnik")) {
 						Vlasnik vlasnik = new Vlasnik(username, password);
@@ -103,7 +122,7 @@ public class Platforma {
 		} catch (XMLParseException e) {
 			System.err.println("Greška pri čitanju XML datoteke: " + e.getMessage());
 		}
-		System.out.println("ovo su svi ucitani korisnici "+korisnici);//obrisati posle
+		System.out.println("ovo su svi ucitani korisnici " + korisnici);// obrisati posle
 		return korisnici;
 	}
 
@@ -134,18 +153,19 @@ public class Platforma {
 								DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
 						double raspolozivaSredstva = Double.parseDouble(
 								karticaElement.getElementsByTagName("raspolozivaSredstva").item(0).getTextContent());
-						String voziloAktivnoIDString=karticaElement.getElementsByTagName("voziloAktivno").item(0).getTextContent();
-						int voziloAktivnoID=0;
-						if(voziloAktivnoIDString.isEmpty()||voziloAktivnoIDString.isBlank()) {
-							voziloAktivnoID=0;
-						}else {
+						String voziloAktivnoIDString = karticaElement.getElementsByTagName("voziloAktivno").item(0)
+								.getTextContent();
+						int voziloAktivnoID = 0;
+						if (voziloAktivnoIDString.isEmpty() || voziloAktivnoIDString.isBlank()) {
+							voziloAktivnoID = 0;
+						} else {
 							try {
-							voziloAktivnoID = Integer.parseInt(voziloAktivnoIDString);	
-							}catch(NumberFormatException e){
-								System.err.println("Nije moguce pretvoriti "+voziloAktivnoIDString + " u broj");
+								voziloAktivnoID = Integer.parseInt(voziloAktivnoIDString);
+							} catch (NumberFormatException e) {
+								System.err.println("Nije moguce pretvoriti " + voziloAktivnoIDString + " u broj");
 							}
 						}
-						
+
 						UpravljanjeVozilima upravljanjeVozilima = new UpravljanjeVozilima();
 						Vozilo voziloAktivno = upravljanjeVozilima.pronadjiVoziloPrekoID(voziloAktivnoID);
 						return new Kartica(id, iznajmljivac, datumOd, datumDo, raspolozivaSredstva, voziloAktivno);
@@ -161,14 +181,20 @@ public class Platforma {
 		return null;
 	}
 
-	public static void prijavaKorinsika(String username, String password)
+	public static void prijavaKorinsika(Scanner inputScanner)
 			throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+		System.out.println("Unesite korisnicko ime: ");
+		String korisnickoIme = inputScanner.nextLine();
+
+		System.out.println("Unesite lozinku: ");
+		String lozinka = inputScanner.nextLine();
+
 		List<Korisnik> korisnici = ucitajKorisnike();
 		for (Korisnik korisnik : korisnici) {
-			if (korisnik.getUsername().equals(username) && korisnik.getPassword().equals(password)) {
+			if (korisnik.getUsername().equals(korisnickoIme) && korisnik.getPassword().equals(lozinka)) {
 				System.out.println("Uspesno ulogovani");
-				System.out.println("Dobrodosli, " + username);
-				korisnikUlogovan=korisnik;
+				System.out.println("Dobrodosli, " + korisnickoIme);
+				korisnikUlogovan = korisnik;
 				meniZaKorisnika(korisnik);
 			}
 		}
@@ -183,16 +209,20 @@ public class Platforma {
 			if (brojOdabira == 1) {
 				// iznajmi vozilo
 				try {
-					//System.out.println("Ovo su sva Vozila "+upravljanjeVozilima.ucitajVozila());
-					List<Vozilo> svaVozila=upravljanjeVozilima.ucitajVozila();
-					List<Vozilo> slobodnaVozila=upravljanjeVozilima.slobodnaVozila(svaVozila);
-					System.out.println("Ovo su slobodna Vozila \n"+ slobodnaVozila);
+					// System.out.println("Ovo su sva Vozila "+upravljanjeVozilima.ucitajVozila());
+					List<Vozilo> svaVozila = upravljanjeVozilima.ucitajVozila();
+					List<Vozilo> slobodnaVozila = upravljanjeVozilima.slobodnaVozila(svaVozila);
+					System.out.println("Ovo su slobodna Vozila \n" + slobodnaVozila);
 					((Iznajmljivac) korisnik).unajmi(slobodnaVozila);
 				} catch (XMLParseException e) {
 					e.printStackTrace();
 				}
 			}
 			// vrati vozilo
+		} else if (korisnik instanceof Serviser) {
+//			System.out.println(); //ovde da budu metoda vezane za servisera
+		} else if (korisnik instanceof Vlasnik) {
+//			System.out.println(); //ovde da budu metoda vezane za vlasnika
 		}
 		inputScanner.close();
 	}
@@ -202,10 +232,14 @@ public class Platforma {
 		System.exit(0);
 	}
 
-	public void registracijaKorisnika(String username, String password) {
-		Scanner inputScanner = new Scanner(System.in);
+	public static void registracijaKorisnika(Scanner inputScanner) {
+		System.out.println("Registracija novog korisnika\n");
 
-		System.out.println("Registracija novog korisnika");
+		System.out.println("Unesite korisnicko ime: ");
+		String korisnickoIme = inputScanner.nextLine();
+
+		System.out.println("Unesite lozinku: ");
+		String lozinka = inputScanner.nextLine();
 
 		String tipKorisnika = null;
 		boolean ispravanUnos = false;
