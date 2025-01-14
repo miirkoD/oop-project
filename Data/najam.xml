@@ -1,1 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><najmovi><najam/><najam/></najmovi>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<najmovi>
+  <najam>
+    <tipVozila>Bicikl</tipVozila>
+    <IdVozila>1</IdVozila>
+    <cenaPoSatu>200.0</cenaPoSatu>
+    <datumKreiranjNajma>2025-01-14T14:41:47.802026400</datumKreiranjNajma>
+  </najam>
+</najmovi>

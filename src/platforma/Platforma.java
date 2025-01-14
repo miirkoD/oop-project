@@ -52,7 +52,7 @@ public class Platforma {
 
 		prijavaKorinsika(korisnickoIme, lozinka);
 
-		System.out.println("Ovo je ulogovani korisnik"+ korisnikUlogovan);
+		//System.out.println("Ovo je ulogovani korisnik"+ korisnikUlogovan);
 		inputScanner.close();
 	}
 
@@ -183,10 +183,10 @@ public class Platforma {
 			if (brojOdabira == 1) {
 				// iznajmi vozilo
 				try {
-					System.out.println("Ovo su sva Vozila "+upravljanjeVozilima.ucitajVozila());
+					//System.out.println("Ovo su sva Vozila "+upravljanjeVozilima.ucitajVozila());
 					List<Vozilo> svaVozila=upravljanjeVozilima.ucitajVozila();
 					List<Vozilo> slobodnaVozila=upravljanjeVozilima.slobodnaVozila(svaVozila);
-					System.out.println("Ovo su slobodna Vozila "+ slobodnaVozila);
+					System.out.println("Ovo su slobodna Vozila \n"+ slobodnaVozila);
 					((Iznajmljivac) korisnik).unajmi(slobodnaVozila);
 				} catch (XMLParseException e) {
 					e.printStackTrace();

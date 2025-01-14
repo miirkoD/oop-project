@@ -12,4 +12,21 @@ public class Bicikl extends Vozilo{
 		this.brzine=brzine;
 		this.visina=visina;
 	}
+
+	public int getBrzine() {
+		return brzine;
+	}
+
+	public double getVisina() {
+		return visina;
+	}
+
+	@Override
+	public String toString() {
+		return"Bicikl{"+
+	"Id "+this.getId()+
+	"\nCena po satu "+this.getCenaPoSatu()+"\nMaksimalna kilaza "+this.getMaxTezina()+"\nBroj brzina "+this.getBrzine()+"\nVisina bicikla "+this.getVisina()+"}";
+	}
+	
+	
 }

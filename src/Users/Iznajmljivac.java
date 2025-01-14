@@ -74,7 +74,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 			
 			if (odabranBroj >= 1 && odabranBroj <= slobodnaVozila.size()) {
 				Vozilo odabranoVozilo = slobodnaVozila.get(odabranBroj - 1);
-				odabranoVozilo.postaviNaZauzeto();
+				odabranoVozilo.setZauzeto(true);
 				System.out.println("Odabrali ste vozilo: " + odabranoVozilo);
 				this.nsgoKartica.isVoziloAktivno(odabranoVozilo);
 				// popom kreirati novu metodu u kojoj bi prosledili najam i onda dodavali u
@@ -85,10 +85,8 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 				System.out.println("Neispravan unos pokusajte opet!");
 			}
 		}
-		odabirVozila.close();
 		najamUDatoteku(najam);
 		//dodati istoriju kasnije
-		//this.nsgoKartica.
 		odabirVozila.close();
 		return najam;
 	}
@@ -98,12 +96,13 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		return sadaVreme;
 	}
 	
-	public String FormatirajVreme(LocalDateTime vreme) {
-		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd.MM.yyyy HH.mm");
-		String formiranoVreme=vreme.format(formatter);
-		return formiranoVreme;
-	}
-	
+	//ovo obrisati ako se ne koristi
+//	public String FormatirajVreme(LocalDateTime vreme) {
+//		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd.MM.yyyy HH.mm");
+//		String formiranoVreme=vreme.format(formatter);
+//		return formiranoVreme;
+//	}
+//	
 	public void najamUDatoteku(Najam najam) {
 		try {
 			DocumentBuilderFactory dbFactory =DocumentBuilderFactory.newInstance();
@@ -120,6 +119,26 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 			}
 			
 			Element najamElement=doc.createElement("najam");
+			
+			Element tipVozilaElement =doc.createElement("tipVozila");
+			String tipVozila=najam.getVozilo().tipVozila();
+			tipVozilaElement.appendChild(doc.createTextNode(tipVozila));
+			najamElement.appendChild(tipVozilaElement);
+			
+			Element idVozilaElement=doc.createElement("IdVozila");
+			String idVozilaString=String.valueOf(najam.getVozilo().getId());
+			idVozilaElement.appendChild(doc.createTextNode(idVozilaString));
+			najamElement.appendChild(idVozilaElement);
+			
+			Element cenaPoSatuElement=doc.createElement("cenaPoSatu");
+			String cenaPoSatuString=String.valueOf(najam.getVozilo().getCenaPoSatu());
+			cenaPoSatuElement.appendChild(doc.createTextNode(cenaPoSatuString));
+			najamElement.appendChild(cenaPoSatuElement);
+			
+			Element datumKreiranjaNajmaElement=doc.createElement("datumKreiranjNajma");
+			String datumKreiranjaNajmaString=String.valueOf(najam.getDatumPocetka());
+			datumKreiranjaNajmaElement.appendChild(doc.createTextNode(datumKreiranjaNajmaString));
+			najamElement.appendChild(datumKreiranjaNajmaElement);
 			
 			doc.getDocumentElement().appendChild(najamElement);
 			

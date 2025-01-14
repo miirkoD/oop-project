@@ -27,4 +27,21 @@ public class Najam {
 		this.vozilo=vozilo;
 		this.servis=servis; //po potrebi vratiti
 	}
+
+	public Vozilo getVozilo() {
+		return vozilo;
+	}
+
+	public LocalDateTime getDatumPocetka() {
+		return datumPocetka;
+	}
+
+	public LocalDateTime getDatumKraja() {
+		return datumKraja;
+	}
+
+	public Iznajmljivac getIznajmljivac() {
+		return iznajmljivac;
+	}
+	
 }

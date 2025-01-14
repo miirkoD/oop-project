@@ -53,9 +53,8 @@ public class Kartica {
 	
 	
 	public boolean jeAktivna() {
-		DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd.mm.yyyy");
+		DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 		try {
-			//LocalDate datumOdLocalDate= LocalDate.parse(datumOd.toString(),formatter);
 			LocalDate datumDoLocalDate=LocalDate.parse(datumDo.toString(),formatter);
 			return LocalDate.now().isBefore(datumDoLocalDate);
 		}catch(DateTimeParseException e) {

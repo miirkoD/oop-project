@@ -18,39 +18,43 @@ import enumi.Stanje;
 
 abstract public class Vozilo {
 	private int id;
-	private  Vlasnik vlasnik;
+	private Vlasnik vlasnik;
 	private double cenaPoSatu;
 	private double maxTezina;
 	private Stanje stanje;
 	private boolean zauzeto;
-	
-	public Vozilo(int id, Vlasnik vlasnik, double cenaPoSatu, double maxTezina,Stanje stanje) {
-		this.id=id;
-		this.vlasnik=vlasnik;
-		this.cenaPoSatu=cenaPoSatu;
-		this.maxTezina=maxTezina;
-		this.stanje=stanje;
-		this.zauzeto=false;
+
+	public Vozilo(int id, Vlasnik vlasnik, double cenaPoSatu, double maxTezina, Stanje stanje) {
+		this.id = id;
+		this.vlasnik = vlasnik;
+		this.cenaPoSatu = cenaPoSatu;
+		this.maxTezina = maxTezina;
+		this.stanje = stanje;
+		this.zauzeto = false;
 	}
-	
-	
+
 	public int getId() {
 		return this.id;
 	}
 
+	public String tipVozila() {
+		if (this instanceof Bicikl) {
+			return "Bicikl";
+		} else if (this instanceof Trotinet) {
+			return "Trotinet";
+		} else {
+			return "Nepoznato vozilo";
+		}
+	}
 
-	public void postaviNaZauzeto() {
-		this.zauzeto=true;
+	public void setZauzeto(boolean zauzeto) {
+		this.zauzeto = zauzeto;
 	}
-	
-	public void postaviNaSlobodno() {
-		this.zauzeto=false;
-	}
-	
+
 	public boolean isZauzeto() {
 		return this.zauzeto;
 	}
-	
+
 	public double getCenaPoSatu() {
 		return cenaPoSatu;
 	}
@@ -59,7 +63,6 @@ abstract public class Vozilo {
 		return maxTezina;
 	}
 
-	//pretraga se moze vrsiti preko tipa, zauzetorsti, ili po servisu
-	
-	
+	// pretraga se moze vrsiti preko tipa, zauzetorsti, ili po servisu
+
 }
