@@ -18,12 +18,15 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import kartica.Kartica;
 import najmovi.Najam;
 //import najmovi.Najam;
 import vozila.Iznajmljivo;
+import vozila.UpravljanjeVozilima;
 import vozila.Vozilo;
 
 public class Iznajmljivac extends Korisnik implements Iznajmljivo {
@@ -50,12 +53,13 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		String formiranoVreme = vreme.format(formatter);
 		return formiranoVreme;
 	}
-	
+
 	@Override
-	public Najam unajmi(List<Vozilo> slobodnaVozila) {// izvuci kod iz funkcije slobodnaVozila
+	public Najam unajmi(List<Vozilo> slobodnaVozila) {
 		Scanner odabirVozila = new Scanner(System.in);
 		Najam najam = null;
 		int brojVozila = 0;
+		UpravljanjeVozilima upravljanjeVozilima = new UpravljanjeVozilima();
 
 		if (slobodnaVozila.isEmpty()) {
 			System.out.println("Trenutno nema slobodnih vozila!");
@@ -84,6 +88,8 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 					// listu istorija iznajmljivanja
 					najam = new Najam(odabranoVozilo.getId(), this.datumIVremeTrenutno(), null, this, odabranoVozilo,
 							false);
+					upravljanjeVozilima.azurirajXML(odabranoVozilo);//azuriranje vozila.xml
+					azurirajKarticu(this.nsgoKartica.getId(),odabranoVozilo.getId());
 					break;
 				} else {
 					System.out.println("Greska proverite da li imate dovoljno sredstava ili vam kartica nije aktivna");
@@ -98,6 +104,37 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		return najam;
 	}
 
+	public void azurirajKarticu(int idKartice, int idVozila) {
+		try {			
+			DocumentBuilderFactory dbFactory=DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder=dbFactory.newDocumentBuilder();
+			File kariceFile =new File("Data/kartice.xml");
+			
+			Document doc =dBuilder.parse(kariceFile);
+			NodeList karticeList=doc.getElementsByTagName("kartice");
+			
+			for(int i=0;i<karticeList.getLength();i++) {
+				Node karticaNode=karticeList.item(i);
+				
+				if(karticaNode.getNodeType()==Node.ELEMENT_NODE) {
+					Element karticaElement=(Element)karticaNode;
+					int karticaId=Integer.parseInt(karticaElement.getElementsByTagName("id").item(0).getTextContent());
+					if(karticaId==idKartice) {
+						Element voziloAktivnoElement=(Element) karticaElement.getElementsByTagName("voziloAktivno").item(0);
+						voziloAktivnoElement.setTextContent(String.valueOf(idVozila));
+						break;
+					}
+				}
+			}
+			TransformerFactory transformerFactory=TransformerFactory.newInstance();
+			Transformer transformer=transformerFactory.newTransformer();
+			DOMSource source=new DOMSource(doc);
+			StreamResult result=new StreamResult(new File("Data/kartice.xml"));
+			transformer.transform(source,result);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void najamUDatoteku(Najam najam) {
 		try {

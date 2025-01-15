@@ -8,6 +8,10 @@ import java.util.Scanner;
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -94,6 +98,39 @@ public class UpravljanjeVozilima {
 			}
 		}
 		return slobodnaVozilaList;
+	}
+	
+	public void azurirajXML(Vozilo vozilo) {
+		try {
+			DocumentBuilderFactory dbFactory=DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder=dbFactory.newDocumentBuilder();
+			File voziloFile =new File("Data/vozila.xml");
+			
+			Document doc =dBuilder.parse(voziloFile);
+			NodeList vozilaList=doc.getElementsByTagName("vozilo");
+			
+			for(int i=0;i<vozilaList.getLength();i++) {
+				Node voziloNode=vozilaList.item(i);
+				
+				if(voziloNode.getNodeType()==Node.ELEMENT_NODE) {
+					Element voziloElement= (Element)voziloNode;
+					int id=Integer.parseInt(voziloElement.getElementsByTagName("id").item(0).getTextContent());
+					if(id==vozilo.getId()) {
+						Element zauzetoElement=(Element) voziloElement.getElementsByTagName("zauzeto").item(0);
+						zauzetoElement.setTextContent("true");
+						break;
+					}
+				}
+			}
+			
+			TransformerFactory transformerFactory=TransformerFactory.newInstance();
+			Transformer transformer=transformerFactory.newTransformer();
+			DOMSource source=new DOMSource(doc);
+			StreamResult result=new StreamResult(new File("Data/vozila.xml"));
+			transformer.transform(source,result);
+		}catch(Exception e) {
+			e.printStackTrace()
+;		}
 	}
 	
 	

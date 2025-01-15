@@ -76,8 +76,11 @@ public class Kartica {
 	
 	
 	
+	public int getId() {
+		return id;
+	}
 	public boolean jeAktivna() { //metoda koja vraca da li je kartica aktivna
-		DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd.MM.yyyy");
+		DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 		try {
 			LocalDate datumDoLocalDate=LocalDate.parse(datumDo.toString(),formatter);
 			return LocalDate.now().isBefore(datumDoLocalDate);
