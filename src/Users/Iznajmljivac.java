@@ -40,6 +40,17 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 
 	// kreirati metode koje su vezane za iznajmljivaca
 
+	public LocalDateTime datumIVremeTrenutno() {
+		LocalDateTime sadaVreme = LocalDateTime.now();
+		return sadaVreme;
+	}
+
+	public String formatirajVreme(LocalDateTime vreme) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+		String formiranoVreme = vreme.format(formatter);
+		return formiranoVreme;
+	}
+	
 	@Override
 	public Najam unajmi(List<Vozilo> slobodnaVozila) {// izvuci kod iz funkcije slobodnaVozila
 		Scanner odabirVozila = new Scanner(System.in);
@@ -87,17 +98,6 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		return najam;
 	}
 
-	public LocalDateTime datumIVremeTrenutno() {
-		LocalDateTime sadaVreme = LocalDateTime.now();
-		return sadaVreme;
-	}
-
-	// ovo obrisati ako se ne koristi
-	public String formatirajVreme(LocalDateTime vreme) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-		String formiranoVreme = vreme.format(formatter);
-		return formiranoVreme;
-	}
 
 	public void najamUDatoteku(Najam najam) {
 		try {
@@ -158,7 +158,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 
 	@Override
 	public String toString() {
-		return "Iznajmljivac {Korisnicko ime= '" + getUsername() + this.nsgoKartica.toString() + " }";
+		return "Iznajmljivac { Korisnicko ime= '" + getUsername() + this.nsgoKartica.toString() + " }";
 	}
 
 	public String tip() {

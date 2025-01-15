@@ -5,8 +5,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 import Users.Iznajmljivac;
 import vozila.Vozilo;
@@ -19,14 +22,19 @@ public class Kartica {
 	private LocalDateTime datumDo;
 	private double raspolozivaSredstva;
 	private Vozilo voziloAktivno;
+	
 	private List<Najam> istorijaIznajmljivanja;
 	
-	public Kartica(int id, Iznajmljivac iznajmljivac) {
-		this.id=id;
+	private static Set<Integer>iskorisceniIDovi=new HashSet<>();
+	private static Random random=new Random();
+	
+	public Kartica(Iznajmljivac iznajmljivac) {
+		generisiIDKartice();
 		this.iznajmljivac=iznajmljivac;
 		this.raspolozivaSredstva=0.0; 
 		this.voziloAktivno=null;
-		KreirajDatume();
+		KreirajDatumOd();
+		KreirajDatumDo();
 	}
 	public Kartica(int id, Iznajmljivac iznajmljivac, LocalDateTime datumOd,LocalDateTime datumDo, double raspolozivaSredstva,Vozilo voziloAktivno) {
 		this.id=id;
@@ -40,16 +48,32 @@ public class Kartica {
 	public List<Najam> getIstorijaIznajmljivanja() {
 		return istorijaIznajmljivanja;
 	}
+	
+	public int generisiIDKartice() {
+		int id;
+		do {
+			id=random.nextInt(10000);
+		}while(iskorisceniIDovi.contains(id));
+		iskorisceniIDovi.add(id);
+		return id;
+	}
 
 	public void setIstorijaIznajmljivanja(List<Najam> istorijaIznajmljivanja) {
 		this.istorijaIznajmljivanja = istorijaIznajmljivanja;
 	}
 
-	public void KreirajDatume() {
+	public LocalDateTime KreirajDatumOd() {
 		LocalDateTime danas=LocalDateTime.now();
 		datumOd = danas;
 		datumDo=danas.plusYears(1);
+		return datumOd;
 	}
+	public LocalDateTime KreirajDatumDo() {
+		LocalDateTime danas=LocalDateTime.now();
+		datumDo=danas.plusYears(1);
+		return datumDo;
+	}
+	
 	
 	
 	public boolean jeAktivna() { //metoda koja vraca da li je kartica aktivna

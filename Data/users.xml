@@ -1,17 +1,17 @@
 <korisnici>
 	<korisnik>
-		<username>mirko_d</username>
-		<password>pass123</password>
+		<korisnickoIme>mirko_d</korisnickoIme>
+		<lozinka>pass123</lozinka>
 		<tipKorisnika>iznajmljivac</tipKorisnika>
 	</korisnik>
 	<korisnik>
-		<username>tijana_p</username>
-		<password>pass123</password>
+		<korisnickoIme>tijana_p</korisnickoIme>
+		<lozinka>pass123</lozinka>
 		<tipKorisnika>serviser</tipKorisnika>
 	</korisnik>
 	<korisnik>
-		<username>marko_m</username>
-		<password>sifra</password>
+		<korisnickoIme>marko_m</korisnickoIme>
+		<lozinka>sifra</lozinka>
 		<tipKorisnika>vlasnik</tipKorisnika>
 	</korisnik>
 </korisnici>
