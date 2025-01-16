@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <najmovi>
   <najam>
-    <tipVozila>Bicikl</tipVozila>
-    <IdVozila>1</IdVozila>
-    <cenaPoSatu>200.0</cenaPoSatu>
-    <datumKreiranjNajma>14.01.2025 14:41</datumKreiranjNajma>
-  </najam>
-  <najam>
     <korisnickoIme>mirko_d</korisnickoIme>
     <tipVozila>Bicikl</tipVozila>
     <IdVozila>202</IdVozila>
     <cenaPoSatu>150.0</cenaPoSatu>
     <datumKreiranjNajma>14.01.2025 15:12</datumKreiranjNajma>
     <datumKrajaNajma />
+    <servis>false</servis>
   </najam>
 </najmovi>

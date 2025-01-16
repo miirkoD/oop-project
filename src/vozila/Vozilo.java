@@ -47,6 +47,10 @@ abstract public class Vozilo {
 		}
 	}
 
+	public Stanje getStanje() {
+		return stanje;
+	}
+
 	public void setZauzeto(boolean zauzeto) {
 		this.zauzeto = zauzeto;
 	}
@@ -62,6 +66,11 @@ abstract public class Vozilo {
 	public double getMaxTezina() {
 		return maxTezina;
 	}
+
+	public Vlasnik getVlasnik() {
+		return vlasnik;
+	}
+
 
 	// pretraga se moze vrsiti preko tipa, zauzetorsti, ili po servisu
 

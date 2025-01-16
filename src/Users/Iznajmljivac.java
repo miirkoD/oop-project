@@ -182,7 +182,12 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 			String datumKrajaNajmaString = "";
 			datumKrajaNajmaElement.appendChild(doc.createTextNode(datumKrajaNajmaString));
 			najamElement.appendChild(datumKrajaNajmaElement);
-
+			
+			Element servisElement=doc.createElement("servis");
+			String servisString="false";
+			servisElement.appendChild(doc.createTextNode(servisString));
+			najamElement.appendChild(servisElement);
+			
 			doc.getDocumentElement().appendChild(najamElement);
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -207,8 +212,19 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 	}
 
 	// kreirati funkciju za vracanje vozila
-	public void vrati(Vozilo v) {
-
+	@Override
+	public void vrati() {
+		UpravljanjeVozilima upravljanjeVozilima=new UpravljanjeVozilima();
+		List <Vozilo> svaVozila=upravljanjeVozilima.getSvaVozila();
+		int brojIznajmljenihVozila=0;
+		Scanner izborInput=new Scanner(System.in);
+		
+		System.out.println("Izaberite vozilo koje zelite da vratite");
+		for(Vozilo v:svaVozila) {
+			brojIznajmljenihVozila++;
+			System.out.println(brojIznajmljenihVozila +". "+v);
+			int izborInt=izborInput.nextInt();
+		}
 	}
 
 	// prikaz istorije iznajmljivanja
