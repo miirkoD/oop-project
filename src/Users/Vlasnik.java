@@ -19,8 +19,11 @@ public class Vlasnik extends Korisnik{
 		for(Vozilo vozilo: vlasnikovaVozila) {
 			if(vozilo.getStanje()==Stanje.Neupotrebljivo) {
 				// treba da se obrise
+				upravljanjeVozilima.obrisiVozilo(vozilo.getId());
 			}
 		}
 	}
+	
+
 	//stavljanje vozila van upotrebe
 }

@@ -54,7 +54,7 @@ public class Platforma {
 
 		while (izbor != 1 && izbor != 2) {
 			System.out.println("\n 1. Prijava");
-			System.out.println(" 2.Registracija");
+			System.out.println(" 2.  Registracija");
 			try {
 				izbor = inputScanner.nextInt();
 			} catch (Exception e) {
@@ -62,6 +62,7 @@ public class Platforma {
 				inputScanner.nextLine();
 				continue;
 			}
+			inputScanner.nextLine();
 			switch (izbor) {
 			case 1:
 				prijavaKorinsika(inputScanner);
@@ -125,7 +126,7 @@ public class Platforma {
 		} catch (XMLParseException e) {
 			System.err.println("Greška pri čitanju XML datoteke: " + e.getMessage());
 		}
-		System.out.println("ovo su svi ucitani korisnici " + korisnici);// obrisati posle
+		//System.out.println("ovo su svi ucitani korisnici " + korisnici);// obrisati posle
 		return korisnici;
 	}
 
@@ -199,11 +200,14 @@ public class Platforma {
 				System.out.println("Dobrodosli, " + korisnickoIme);
 				korisnikUlogovan = korisnik;
 				meniZaKorisnika(korisnik);
+			}else {
+				System.out.println("Neuspesna prijava");
 			}
+			break;
 		}
 	}
 
-	public static void meniZaKorisnika(Korisnik korisnik) {
+	public static void meniZaKorisnika(Korisnik korisnik) throws XMLParseException {
 		Scanner inputScanner = new Scanner(System.in);
 		UpravljanjeVozilima upravljanjeVozilima = new UpravljanjeVozilima();
 		if (korisnik instanceof Iznajmljivac) {
@@ -220,7 +224,7 @@ public class Platforma {
 					e.printStackTrace();
 				}
 			} else if (brojOdabira == 2) {//vrati vozilo
-
+				((Iznajmljivac) korisnik).vrati();
 			} else if (brojOdabira == 3) {
 				odjavaKorisnika();
 			}

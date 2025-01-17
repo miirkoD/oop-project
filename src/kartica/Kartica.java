@@ -57,9 +57,9 @@ public class Kartica {
 		iskorisceniIDovi.add(id);
 		return id;
 	}
-
-	public void setIstorijaIznajmljivanja(List<Najam> istorijaIznajmljivanja) {
-		this.istorijaIznajmljivanja = istorijaIznajmljivanja;
+	
+	public void dodajUIstoriju(Najam najam) {
+		istorijaIznajmljivanja.add(najam);
 	}
 
 	public LocalDateTime KreirajDatumOd() {
@@ -124,6 +124,7 @@ public class Kartica {
 	//metoda za vracanje sredstava stavljena u klasu kartica
 	public double setSredstava(double sredstva) {
 		return this.raspolozivaSredstva+=sredstva;
+		
 	}
 
 	

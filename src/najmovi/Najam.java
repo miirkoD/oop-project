@@ -2,8 +2,11 @@ package najmovi;
 
 //import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 //import java.util.Date;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import Users.Iznajmljivac;
 import vozila.Vozilo;
@@ -15,17 +18,28 @@ public class Najam {
 	private LocalDateTime datumKraja;
 	private Iznajmljivac iznajmljivac;
 	private Vozilo vozilo;
-	//dodatna oprema
 	private List<DodatnaOprema> dodatneOprema;
 	private boolean servis;
 	
-	public Najam(int id, LocalDateTime datumPocetka,LocalDateTime datumKraja, Iznajmljivac iznajmljivac, Vozilo vozilo,boolean servis) {
-		this.id=id;
+	private static Set<Integer>iskorisceniIDovi=new HashSet<>();
+	private static Random random=new Random();
+	
+	public Najam(LocalDateTime datumPocetka,LocalDateTime datumKraja, Iznajmljivac iznajmljivac, Vozilo vozilo,boolean servis) {
+		generisiIDNajma();
 		this.datumPocetka=datumPocetka;
 		this.datumKraja=datumKraja;
 		this.iznajmljivac=iznajmljivac;
 		this.vozilo=vozilo;
 		this.servis=servis; //po potrebi vratiti
+	}
+	
+	public int generisiIDNajma() {
+		int id;
+		do {
+			id=random.nextInt(10000);
+		}while(iskorisceniIDovi.contains(id));
+		iskorisceniIDovi.add(id);
+		return id;
 	}
 
 	public Vozilo getVozilo() {
@@ -42,6 +56,10 @@ public class Najam {
 
 	public Iznajmljivac getIznajmljivac() {
 		return iznajmljivac;
+	}
+
+	public int getId() {
+		return this.id;
 	}
 	
 }

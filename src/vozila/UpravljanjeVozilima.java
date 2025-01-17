@@ -24,10 +24,10 @@ import enumi.Stanje;
 import najmovi.Najam;
 
 public class UpravljanjeVozilima {
-	ArrayList<Vozilo> svaVozila = new ArrayList<>();
+	List<Vozilo> svaVozila = new ArrayList<>();
 
 	public List<Vozilo> ucitajVozila() throws XMLParseException {
-		ArrayList<Vozilo> svaVozila = new ArrayList<>();
+//		ArrayList<Vozilo> svaVozila = new ArrayList<>();
 
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -61,16 +61,10 @@ public class UpravljanjeVozilima {
 					boolean zauzeto = Boolean
 							.parseBoolean(voziloElement.getElementsByTagName("zauzeto").item(0).getTextContent());
 
-//					if(zauzeto) {
-//						continue;
-//					}
-
 					Element vlasnikElement = (Element) voziloElement.getElementsByTagName("vlasnik").item(0);
 					String vlasnikUsername = vlasnikElement.getElementsByTagName("username").item(0).getTextContent();
 					String vlasnikPassword = vlasnikElement.getElementsByTagName("password").item(0).getTextContent();
 					Vlasnik vlasnik = new Vlasnik(vlasnikUsername, vlasnikPassword);
-					// posle staviti da poziva funkciju koja proverava username iz users.xml
-
 					String tip = voziloElement.getElementsByTagName("tip").item(0).getTextContent();
 					Vozilo vozilo = null;
 
@@ -90,6 +84,7 @@ public class UpravljanjeVozilima {
 
 					if (vozilo != null) {
 						svaVozila.add(vozilo);
+//						System.out.print("ovo su sva vozila "+svaVozila); //provera da li se vozila dodaju u listu
 					}
 				}
 			}
@@ -99,6 +94,42 @@ public class UpravljanjeVozilima {
 		return svaVozila;
 	}
 
+	public void obrisiVozilo(int idVozila) {
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc;
+			File vozilaFile = new File("Data/vozila.xml");
+			doc = dBuilder.parse(vozilaFile);
+
+			NodeList vozilaList = doc.getElementsByTagName("vozila");
+			
+			for (int i = 0; i < vozilaList.getLength(); i++) {
+				Node voziloNode = vozilaList.item(i);
+
+				if (voziloNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element voziloElement = (Element) voziloNode;
+					
+					int idVozilaFile= Integer.parseInt(voziloElement.getElementsByTagName("id").item(0).getTextContent());
+					
+					if(idVozilaFile==idVozila) {
+						vozilaList.item(i).getParentNode().removeChild(voziloNode);
+						break;
+					}
+				}
+			}
+			TransformerFactory transformerFactory=TransformerFactory.newInstance();
+			Transformer transformer =transformerFactory.newTransformer();
+			DOMSource source=new DOMSource(doc);
+			StreamResult result=new StreamResult(vozilaFile);
+			transformer.transform(source, result);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public List<Vozilo> slobodnaVozila(List<Vozilo> vozila) {
 		ArrayList<Vozilo> slobodnaVozilaList = new ArrayList<>();
 		for (Vozilo v : vozila) {
@@ -120,7 +151,7 @@ public class UpravljanjeVozilima {
 		return vozilaVlasnika;
 	}
 
-	public ArrayList<Vozilo> getSvaVozila() {
+	public List<Vozilo> getSvaVozila() {
 		return svaVozila;
 	}
 

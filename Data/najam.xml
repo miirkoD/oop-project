@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <najmovi>
   <najam>
+    <idNajma>1345</idNajma>
     <korisnickoIme>mirko_d</korisnickoIme>
     <tipVozila>Bicikl</tipVozila>
     <IdVozila>202</IdVozila>
