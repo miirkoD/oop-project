@@ -39,13 +39,9 @@ import vozila.Vozilo;
 
 public class Platforma {
 	private static Korisnik korisnikUlogovan;
-	// private List <Vozilo> dostupnaVozila;
-	// private String naziv;
-	// private String korisnici="../Data/users.xml";
 
 	public static void main(String[] args)
 			throws SAXException, IOException, ParserConfigurationException, XMLParseException {
-		// Scanner izbor1Scanner=new Scanner(System.in);
 		System.out.println("Dobrodosli u aplikaciju za iznajmljivanje trotineta i bicikala!");
 
 		Scanner inputScanner = new Scanner(System.in);
@@ -68,7 +64,7 @@ public class Platforma {
 				prijavaKorinsika(inputScanner);
 				break;
 			case 2:
-				registracijaKorisnika(inputScanner); // registraciju treba popraviti
+				registracijaKorisnika(inputScanner); 
 				break;
 			default:
 				System.out.println("Pogresan unos, probajte opet");
@@ -99,9 +95,6 @@ public class Platforma {
 					String username = korisnikElement.getElementsByTagName("korisnickoIme").item(0).getTextContent();
 					String password = korisnikElement.getElementsByTagName("lozinka").item(0).getTextContent();
 					String tipKorisnika = korisnikElement.getElementsByTagName("tipKorisnika").item(0).getTextContent();
-					// System.out.println(tipKorisnika);
-
-					// Korisnik korisnik;
 
 					if (tipKorisnika.equals("iznajmljivac")) {
 						Iznajmljivac iznajmljivac = new Iznajmljivac(username, password);

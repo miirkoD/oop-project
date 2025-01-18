@@ -24,10 +24,10 @@ import enumi.Stanje;
 import najmovi.Najam;
 
 public class UpravljanjeVozilima {
-	List<Vozilo> svaVozila = new ArrayList<>();
+	//List<Vozilo> svaVozila = new ArrayList<>();
 
 	public List<Vozilo> ucitajVozila() throws XMLParseException {
-//		ArrayList<Vozilo> svaVozila = new ArrayList<>();
+		ArrayList<Vozilo> svaVozila = new ArrayList<>();
 
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -130,6 +130,18 @@ public class UpravljanjeVozilima {
 		
 	}
 	
+	public List<Vozilo> ostecenaVozila() throws XMLParseException {
+		List<Vozilo>svaVozila=ucitajVozila();
+		List<Vozilo>ostecenaVozila=new ArrayList<>();
+		
+		for(Vozilo vozilo:svaVozila) {
+			if(vozilo.getStanje()==Stanje.Malo_Ostecenje||vozilo.getStanje()==Stanje.Veliko_Ostecenje) {
+				ostecenaVozila.add(vozilo);
+			}
+		}
+		return ostecenaVozila;
+	}
+
 	public List<Vozilo> slobodnaVozila(List<Vozilo> vozila) {
 		ArrayList<Vozilo> slobodnaVozilaList = new ArrayList<>();
 		for (Vozilo v : vozila) {
@@ -140,19 +152,15 @@ public class UpravljanjeVozilima {
 		return slobodnaVozilaList;
 	}
 	
-	public List<Vozilo>vlasnikovaVozila(String username,String password){
-		List<Vozilo> vozilaVlasnika=new ArrayList();
-		
-		for(Vozilo v : this.svaVozila) {
+	public List<Vozilo>vlasnikovaVozila(String username,String password) throws XMLParseException{
+		List<Vozilo> vozilaVlasnika=new ArrayList<>();
+		List<Vozilo> svaVozila=ucitajVozila();
+		for(Vozilo v :svaVozila) {
 			if(v.getVlasnik().getUsername().equals(username)&& v.getVlasnik().getPassword().equals(password)) {
 				vozilaVlasnika.add(v);
 			}
 		}
 		return vozilaVlasnika;
-	}
-
-	public List<Vozilo> getSvaVozila() {
-		return svaVozila;
 	}
 
 	public void azurirajXML(Vozilo vozilo) {
@@ -188,6 +196,40 @@ public class UpravljanjeVozilima {
 		}
 	}
 
+	public void azurirajStanjeVozila(Vozilo vozilo) {
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			File voziloFile = new File("Data/vozila.xml");
+
+			Document doc = dBuilder.parse(voziloFile);
+			NodeList vozilaList = doc.getElementsByTagName("vozilo");
+
+			for (int i = 0; i < vozilaList.getLength(); i++) {
+				Node voziloNode = vozilaList.item(i);
+
+				if (voziloNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element voziloElement = (Element) voziloNode;
+					int id = Integer.parseInt(voziloElement.getElementsByTagName("id").item(0).getTextContent());
+					if (id == vozilo.getId()) {
+						String stanjeNovo="Bez_Ostecenja";
+						Element stanjeElement = (Element) voziloElement.getElementsByTagName("stanje").item(0);
+						stanjeElement.setTextContent(stanjeNovo);
+						break;
+					}
+				}
+			}
+
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File("Data/vozila.xml"));
+			transformer.transform(source, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public Vozilo pronadjiVoziloPrekoID(int id) throws XMLParseException {
 		List<Vozilo> svaVozila = ucitajVozila();
 
@@ -199,7 +241,7 @@ public class UpravljanjeVozilima {
 		return null;
 	}
 
-	public void pretragaVozila() {
+	public void pretragaVozila() throws XMLParseException {
 		Scanner pretragaInput = new Scanner(System.in);
 		System.out.println("Izaberite nacin na koji zelite da pretrazite vozilo");
 		System.out.println("1. preko tipa vozila /n" + "2. Preko zauzetosti /n" + "3. Po servisu");
@@ -220,6 +262,7 @@ public class UpravljanjeVozilima {
 			System.out.print("Unesite 1 ako zelite da vidite vozila koja su servisirana.");
 			System.out.print("Unesite 2 ako zelite da vidite vozila koja nisu servisirana");
 			int servis=pretragaInput.nextInt();
+			pretragaPoServisu(servis);
 			break;			
 		default:
 			System.out.println("Pogresan unos probajte ponovo");
@@ -228,9 +271,10 @@ public class UpravljanjeVozilima {
 		pretragaInput.close();
 	}
 
-	public void pretragaPoTip(String tip) {
+	public void pretragaPoTip(String tip) throws XMLParseException {
+		List<Vozilo> svaVozila=ucitajVozila();
 		List<Vozilo> vozilaTipa = new ArrayList<Vozilo>();
-		for (Vozilo v : this.svaVozila) {
+		for (Vozilo v : svaVozila) {
 			if (v.tipVozila().equals(tip)) {
 				vozilaTipa.add(v);
 			}
@@ -238,15 +282,16 @@ public class UpravljanjeVozilima {
 		System.out.println(vozilaTipa);
 	}
 
-	public void pretragaPoZauzetosti(String zauzetost) {
+	public void pretragaPoZauzetosti(String zauzetost) throws XMLParseException {
 		if (!Arrays.asList("zauzeto", "slobodno").contains(zauzetost.toLowerCase())) {
 			System.out.println("Neispravan unos! Unesite 'zauzeto' ili 'slobodno' kako bismte pretrazili");
 			return;
 		}
+		List<Vozilo> svaVozila=ucitajVozila();
 		List<Vozilo> vozilaZauzetosti = new ArrayList<Vozilo>();
 		boolean traziZauzeto = zauzetost.equalsIgnoreCase("zauzeto");
 
-		for (Vozilo v : this.svaVozila) {
+		for (Vozilo v : svaVozila) {
 			if (v.isZauzeto() == traziZauzeto) {
 				vozilaZauzetosti.add(v);
 			}
@@ -254,7 +299,8 @@ public class UpravljanjeVozilima {
 		System.out.println(vozilaZauzetosti);
 	}
 
-	public void pretragaPoServisu(int servis) {
+	public void pretragaPoServisu(int servis) throws XMLParseException {
+		List<Vozilo> svaVozila=ucitajVozila();
 		List<Vozilo> vozilaServis = new ArrayList<Vozilo>();
 		boolean odabir = false;
 		switch (servis) {
@@ -286,7 +332,7 @@ public class UpravljanjeVozilima {
 
 					boolean servisBool = Boolean.parseBoolean(nodeElement.getElementsByTagName("servis").item(0).getTextContent());
 					if (servisBool==odabir) {
-						for (Vozilo vozilo : this.svaVozila) {
+						for (Vozilo vozilo : svaVozila) {
 							if (vozilo.getId() == voziloId) {
 								vozilaServis.add(vozilo);
 								break;

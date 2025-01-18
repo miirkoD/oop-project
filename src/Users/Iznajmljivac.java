@@ -45,11 +45,6 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 
 	// kreirati metode koje su vezane za iznajmljivaca
 
-	public LocalDateTime datumIVremeTrenutno() {
-		LocalDateTime sadaVreme = LocalDateTime.now();
-		return sadaVreme;
-	}
-
 	public String formatirajVreme(LocalDateTime vreme) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 		String formiranoVreme = vreme.format(formatter);
@@ -86,9 +81,10 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 						&& this.nsgoKartica.jeAktivna()) {
 					System.out.println("Odabrali ste vozilo: " + odabranoVozilo);
 					this.nsgoKartica.isVoziloAktivno(odabranoVozilo);
-					najam = new Najam(this.datumIVremeTrenutno(), null, this, odabranoVozilo,false);
-					upravljanjeVozilima.azurirajXML(odabranoVozilo);// azuriranje vozila.xml
-					azurirajKarticu(this.nsgoKartica.getId(), odabranoVozilo.getId());
+					LocalDateTime trenutnoVreme=LocalDateTime.now();
+					najam = new Najam(trenutnoVreme, null, this, odabranoVozilo,false);
+					upravljanjeVozilima.azurirajXML(odabranoVozilo);// azuriranje vrednosti zauzeto u vozila.xml
+					azurirajKarticuAktivnoVozilo(this.nsgoKartica.getId(), odabranoVozilo.getId());
 					break;
 				} else {
 					System.out.println("Greska proverite da li imate dovoljno sredstava ili vam kartica nije aktivna");
@@ -103,7 +99,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		return najam;
 	}
 
-	public void azurirajKarticu(int idKartice, int idVozila) {
+	public void azurirajKarticuAktivnoVozilo(int idKartice, int idVozila) {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -124,6 +120,40 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 								.item(0);
 						voziloAktivnoElement.setTextContent(String.valueOf(idVozila));
 						break;
+					}
+				}
+			}
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File("Data/kartice.xml"));
+			transformer.transform(source, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void azurirajKarticuSredstva(int idKartice, double novaRaspolozivaSredstva) {
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			File kariceFile = new File("Data/kartice.xml");
+
+			Document doc = dBuilder.parse(kariceFile);
+			NodeList karticeList = doc.getElementsByTagName("kartice");
+
+			for (int i = 0; i < karticeList.getLength(); i++) {
+				Node karticaNode = karticeList.item(i);
+
+				if (karticaNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element karticaElement = (Element) karticaNode;
+					int karticaId = Integer
+							.parseInt(karticaElement.getElementsByTagName("id").item(0).getTextContent());
+					if (karticaId == idKartice) {
+						if (karticaId == idKartice) {
+							Element sredstvaElement = (Element) karticaElement.getElementsByTagName("raspolozivaSredstva").item(0);
+							sredstvaElement.setTextContent(String.valueOf(novaRaspolozivaSredstva));
+							break;
+						}
 					}
 				}
 			}
@@ -209,7 +239,6 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		return "Iznajmljivac { Korisnicko ime= '" + getUsername() + this.nsgoKartica.toString() + " }";
 	}
 
-	
 	public void dodajSredstva(){
 		System.out.println("Unesite koliko sredstava zelite da dodate");
 		
@@ -239,9 +268,9 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 							.parseInt(karticaElement.getElementsByTagName("id").item(0).getTextContent());
 					if (karticaId == idKartice) {
 						karticaPronadjena=true;
-						Element voziloAktivnoElement = (Element) karticaElement.getElementsByTagName("raspolozivaSredstva")
+						Element sredstvaElement = (Element) karticaElement.getElementsByTagName("raspolozivaSredstva")
 								.item(0);
-						voziloAktivnoElement.setTextContent(String.valueOf(novaSredstva));
+						sredstvaElement.setTextContent(String.valueOf(novaSredstva));
 						break;
 					}
 				}
@@ -257,6 +286,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		sredstvaInput.close();
 	}
 
 	public List<Vozilo> iznajmljenaVozila() throws XMLParseException {
@@ -288,8 +318,6 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 				for (Vozilo v : svaVozila) {
 					if (v.getId() == idVozilaNajam) {
 						iznajmljenaVozila.add(v);
-						// System.out.println("ID vozila"+v.getId()+" "+"id iz najma " +idVozilaNajam);
-						// provera da li je nasao id isti
 					}
 				}
 			}
@@ -337,12 +365,49 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		
 	}
 
-	// kreirati funkciju za vracanje vozila
+	public void postaviKranjeVreme() {
+		String korisnickoIme=this.getUsername();
+		LocalDateTime vremeKraja=LocalDateTime.now();
+		String formatiranoVreme=formatirajVreme(vremeKraja);
+		//formiratiVreme
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			File najamFile = new File("Data/najam.xml");
+
+			Document doc = dBuilder.parse(najamFile);
+			NodeList najamList = doc.getElementsByTagName("najmovi");
+
+			for (int i = 0; i < najamList.getLength(); i++) {
+				Node najamNode = najamList.item(i);
+
+				if (najamNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element najamElement = (Element) najamNode;
+					
+					String korisnickoImeNajam = najamElement.getElementsByTagName("korisnickoIme").item(0).getTextContent();
+					
+					if (korisnickoImeNajam.equals(korisnickoIme)) {
+							Element datumKrajaElement = (Element) najamElement.getElementsByTagName("datumKrajaNajma").item(0);
+							datumKrajaElement.setTextContent(String.valueOf(formatiranoVreme));
+							break;
+					}
+				}
+			}
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File("Data/najam.xml"));
+			transformer.transform(source, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void vrati() throws XMLParseException {
-		UpravljanjeVozilima upravljanjeVozilima = new UpravljanjeVozilima();
+		//UpravljanjeVozilima upravljanjeVozilima = new UpravljanjeVozilima();
 		List<Vozilo> iznajmljenaVozilaList = iznajmljenaVozila();
-		// System.out.println(iznajmljenaVozilaList);
+		
 		Vozilo izabranoVozilo = null;
 
 		Scanner izborInput = new Scanner(System.in);
@@ -376,7 +441,8 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 			System.out.println("Uspesno vraceno vozilo");
 			
 		}
-		
+		azurirajKarticuSredstva(izabranoVozilo.getId(),novaRaspolozivaSredstva);
+		// kreirati metodu koja u najam.xml stavlja vreme vracanja vozila
 		izborInput.close();
 	}
 

@@ -2,6 +2,8 @@ package Users;
 
 import java.util.List;
 
+import javax.management.modelmbean.XMLParseException;
+
 import enumi.Stanje;
 import vozila.UpravljanjeVozilima;
 import vozila.Vozilo;
@@ -13,7 +15,7 @@ public class Vlasnik extends Korisnik{
 		super(username,password);
 		
 	}
-	public void vanUpotrebe() {
+	public void vanUpotrebe() throws XMLParseException {
 		UpravljanjeVozilima upravljanjeVozilima=new UpravljanjeVozilima();
 		List<Vozilo>vlasnikovaVozila= upravljanjeVozilima.vlasnikovaVozila(getUsername(), getPassword());
 		for(Vozilo vozilo: vlasnikovaVozila) {
