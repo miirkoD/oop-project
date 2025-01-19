@@ -1,4 +1,4 @@
-<vozila>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><vozila>
     <vozilo>
         <tip>bicikl</tip>
         <id>1</id>
@@ -37,7 +37,7 @@
         <cenaPoSatu>300</cenaPoSatu>
         <maxTezina>100</maxTezina>
         <stanje>Malo_Ostecenje</stanje>
-        <zauzeto>false</zauzeto>
+        <zauzeto>true</zauzeto>
         <maxBrzina>25</maxBrzina>
         <trajanjeBaterije>4</trajanjeBaterije>
     </vozilo>

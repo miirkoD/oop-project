@@ -19,15 +19,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
+
 
 import Users.Iznajmljivac;
 import Users.Korisnik;
@@ -64,18 +60,16 @@ public class Platforma {
 				prijavaKorinsika(inputScanner);
 				break;
 			case 2:
-				registracijaKorisnika(inputScanner); 
+				registracijaKorisnika(inputScanner);
 				break;
 			default:
 				System.out.println("Pogresan unos, probajte opet");
 			}
 		}
-		// System.out.println("Ovo je ulogovani korisnik"+ korisnikUlogovan);//provera
-		// da li su svi korisnici tu
 		inputScanner.close();
 	}
 
-	public static List<Korisnik> ucitajKorisnike()
+	private static List<Korisnik> ucitajKorisnike()
 			throws SAXException, IOException, ParserConfigurationException, XMLParseException {
 		List<Korisnik> korisnici = new ArrayList<>();
 		try {
@@ -119,11 +113,12 @@ public class Platforma {
 		} catch (XMLParseException e) {
 			System.err.println("Greška pri čitanju XML datoteke: " + e.getMessage());
 		}
-		//System.out.println("ovo su svi ucitani korisnici " + korisnici);// obrisati posle
+		// System.out.println("ovo su svi ucitani korisnici " + korisnici);// obrisati
+		// posle
 		return korisnici;
 	}
 
-	public static Kartica ucitaneKartice(String username, Iznajmljivac iznajmljivac) throws XMLParseException {
+	private static Kartica ucitaneKartice(String username, Iznajmljivac iznajmljivac) throws XMLParseException {
 		// List<Kartica> karticeIznajmljivaca = new ArrayList<>();
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -178,7 +173,7 @@ public class Platforma {
 		return null;
 	}
 
-	public static void prijavaKorinsika(Scanner inputScanner)
+	private static void prijavaKorinsika(Scanner inputScanner)
 			throws SAXException, IOException, ParserConfigurationException, XMLParseException {
 		System.out.println("Unesite korisnicko ime: ");
 		String korisnickoIme = inputScanner.nextLine();
@@ -193,49 +188,138 @@ public class Platforma {
 				System.out.println("Dobrodosli, " + korisnickoIme);
 				korisnikUlogovan = korisnik;
 				meniZaKorisnika(korisnik);
-			}else {
+				break;
+			} else {
 				System.out.println("Neuspesna prijava");
 			}
-			break;
 		}
 	}
 
 	public static void meniZaKorisnika(Korisnik korisnik) throws XMLParseException {
 		Scanner inputScanner = new Scanner(System.in);
+		
 		UpravljanjeVozilima upravljanjeVozilima = new UpravljanjeVozilima();
+		
+		int brojOdabira=0;
+		boolean ispravanUnos=false; 
+		
 		if (korisnik instanceof Iznajmljivac) {
-			System.out.println("1. Iznjami vozilo, 2. Vrati vozilo, 3. Odjavi se");
-			int brojOdabira = inputScanner.nextInt();
-			if (brojOdabira == 1) {
-				// iznajmi vozilo
-				try {
+			do {
+				((Iznajmljivac)korisnik).proveriSredstva();
+				System.out.println("1. Iznjami vozilo, 2. Vrati vozilo, 3.Dopuni sredstva, 4.Pretraga vozila, 5. Odjavi se");
+				while (!inputScanner.hasNextInt()) {
+					System.out.println("Neispravan unos. Unesite broj opcije: ");
+					inputScanner.next();
+				}
+				brojOdabira=inputScanner.nextInt();
+				switch(brojOdabira) {
+				case 1:
 					List<Vozilo> svaVozila = upravljanjeVozilima.ucitajVozila();
 					List<Vozilo> slobodnaVozila = upravljanjeVozilima.slobodnaVozila(svaVozila);
 					System.out.println("Ovo su slobodna Vozila \n" + slobodnaVozila);
 					((Iznajmljivac) korisnik).unajmi(slobodnaVozila);
-				} catch (XMLParseException e) {
-					e.printStackTrace();
+					ispravanUnos = true;
+					break;
+					
+				case 2:
+					((Iznajmljivac) korisnik).vrati();
+					ispravanUnos = true;
+					break;
+					
+				case 3:
+					((Iznajmljivac) korisnik).dodajSredstva();
+					ispravanUnos = true;
+					break;
+					
+				case 4:
+					upravljanjeVozilima.pretragaVozila(korisnikUlogovan);
+					ispravanUnos = true;
+					break;
+				case 5:
+					odjavaKorisnika();
+					ispravanUnos = true;
+					break;
+				default:
+					System.out.println("Pogresan unos pokusajte ponovo");
 				}
-			} else if (brojOdabira == 2) {//vrati vozilo
-				((Iznajmljivac) korisnik).vrati();
-			} else if (brojOdabira == 3) {
-				odjavaKorisnika();
-			}
-		} else if (korisnik instanceof Serviser) {
-//			System.out.println(); //ovde da budu metoda vezane za servisera
-		} else if (korisnik instanceof Vlasnik) {
-//			System.out.println(); //ovde da budu metoda vezane za vlasnika
+
+			}while (!ispravanUnos);
+		}
+		else if (korisnik instanceof Serviser) {
+			do {
+				System.out.println("1. Popravi vozilo, 2. Pogledaj vozila, 3. Promeni stanje vozilu, 4.Pretraga vozila, 5. Odjavi se");
+				ispravanUnos=false;
+				System.out.println("Unesite broj ");
+				while (!inputScanner.hasNextInt()) {
+					System.out.println("Neispravan unos. Unesite broj opcije: ");
+					inputScanner.next();
+				}
+				brojOdabira=inputScanner.nextInt();
+				switch (brojOdabira) {
+				case 1:
+					((Serviser)korisnik).popravi();
+					ispravanUnos = true;
+					break;
+				case 2:
+					((Serviser)korisnik).pregledanjeVozila();
+					ispravanUnos = true;
+					break;
+				case 3:
+					((Serviser)korisnik).proveriStanje();
+					ispravanUnos = true;
+					break;
+				case 4: 
+					upravljanjeVozilima.pretragaVozila(korisnikUlogovan);
+					ispravanUnos = true;
+					break;
+				case 5:
+					odjavaKorisnika();
+					ispravanUnos = true;
+					break;
+				default:
+					System.out.println("Pogresan unos pokusajte ponovo");
+				}
+			}while(!ispravanUnos);
+		}
+		else if (korisnik instanceof Vlasnik) {
+			do {
+				System.out.println("1. Ukloni vozilo, 2. Pretraga vozila, 3. Odjava korisnika");
+				ispravanUnos = false;
+				System.out.println("Unesite broj ");
+				while (!inputScanner.hasNextInt()) {
+					System.out.println("Neispravan unos. Unesite broj opcije: ");
+					inputScanner.next();
+				}
+				brojOdabira=inputScanner.nextInt();
+				switch (brojOdabira) {
+				case 1:
+					((Vlasnik) korisnik).vanUpotrebe();
+					ispravanUnos = true;
+					break;
+				case 2:
+					upravljanjeVozilima.pretragaVozila(korisnikUlogovan);
+					ispravanUnos = true;
+					break;
+				case 3:
+					odjavaKorisnika();
+					ispravanUnos = true;
+					break;
+				default:
+					System.out.println("Neispravan unos probajte opet");
+				}
+			} while (!ispravanUnos);
+
 		}
 		inputScanner.close();
 	}
 
-	public static void odjavaKorisnika() {
+	private static void odjavaKorisnika() {
 		System.out.println("Korisnik je uspesno odjavljen");
 		korisnikUlogovan = null;
 		System.exit(0);
 	}
 
-	public static void registracijaKorisnika(Scanner inputScanner) {
+	private static void registracijaKorisnika(Scanner inputScanner) throws XMLParseException {
 		System.out.println("Registracija novog korisnika\n");
 
 		System.out.println("Unesite korisnicko ime: ");
@@ -256,16 +340,18 @@ public class Platforma {
 			inputScanner.nextLine();
 
 			if (tipIzbor == 1) {
-				tipKorisnika = "Iznajmljivac";
+				tipKorisnika = "iznajmljivac";
 				ispravanUnos = true;
-				Iznajmljivac iznajmljivacPomocna=new Iznajmljivac(korisnickoIme,lozinka);
-				Kartica kartica=new Kartica(iznajmljivacPomocna);
-				Iznajmljivac iznajmljivacRegistrovan=new Iznajmljivac(korisnickoIme,lozinka,kartica);
-					korisnikUlogovan=iznajmljivacRegistrovan;
+				Iznajmljivac iznajmljivacPomocna = new Iznajmljivac(korisnickoIme, lozinka);
+				Kartica kartica = new Kartica(iznajmljivacPomocna);
+				Iznajmljivac iznajmljivacRegistrovan = new Iznajmljivac(korisnickoIme, lozinka, kartica);
+				korisnikUlogovan = iznajmljivacRegistrovan;
 				break;
 			} else if (tipIzbor == 2) {
-				tipKorisnika = "Serviser";
+				tipKorisnika = "serviser";
 				ispravanUnos = true;
+				Serviser serviserRegistrovan = new Serviser(korisnickoIme, lozinka);
+				korisnikUlogovan = serviserRegistrovan;
 				break;
 			} else {
 				System.out.println("Nepoznat tip korisnika. Registracija nije uspešna. Pokusajte opet.");
@@ -276,39 +362,35 @@ public class Platforma {
 
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder=dbFactory.newDocumentBuilder();
-			Document doc;
-			
-			 File file = new File("Data/users.xml");
-			 if(file.exists()) {
-				 doc=dBuilder.parse(file);
-			 }else {
-				 doc=dBuilder.newDocument();
-				 Element rootElement=doc.createElement("korisnici");
-				 doc.appendChild(rootElement);
-			 }
-			 Element korisnikElement=doc.createElement("korisnik");
-			 
-			 Element korisnickoImeElement=doc.createElement("korisnickoIme");
-			 korisnickoImeElement.appendChild(doc.createTextNode(korisnickoIme));
-			 korisnikElement.appendChild(korisnickoImeElement);
-			 
-			 Element lozinkaElement=doc.createElement("lozinka");
-			 lozinkaElement.appendChild(doc.createTextNode(lozinka));
-			 korisnikElement.appendChild(lozinkaElement);
-			 
-			 Element tipKorisnikaElement=doc.createElement("tipKorisnika");
-			 tipKorisnikaElement.appendChild(doc.createTextNode(tipKorisnika));
-			 korisnikElement.appendChild(tipKorisnikaElement);
-			 
-			 TransformerFactory transformerFactory=TransformerFactory.newInstance();
-			 Transformer transformer=transformerFactory.newTransformer();
-			 transformer.transform(new DOMSource(doc), new StreamResult(file));
-			 
-			 
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			File file = new File("Data/users.xml");
+
+			Document doc = dBuilder.parse(file);
+
+			Element korisnikElement = doc.createElement("korisnik");
+
+			Element korisnickoImeElement = doc.createElement("korisnickoIme");
+			korisnickoImeElement.appendChild(doc.createTextNode(korisnickoIme));
+			korisnikElement.appendChild(korisnickoImeElement);
+
+			Element lozinkaElement = doc.createElement("lozinka");
+			lozinkaElement.appendChild(doc.createTextNode(lozinka));
+			korisnikElement.appendChild(lozinkaElement);
+
+			Element tipKorisnikaElement = doc.createElement("tipKorisnika");
+			tipKorisnikaElement.appendChild(doc.createTextNode(tipKorisnika));
+			korisnikElement.appendChild(tipKorisnikaElement);
+
+			doc.getDocumentElement().appendChild(korisnikElement);
+
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.transform(new DOMSource(doc), new StreamResult(file));
+			System.out.println("Kreiran je korisnik");
 		} catch (Exception e) {
 			System.out.println("Greska pri registraciji: " + e.getMessage());
 		}
+		meniZaKorisnika(korisnikUlogovan);
 		inputScanner.close();
 	}
 

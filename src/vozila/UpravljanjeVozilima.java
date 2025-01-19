@@ -19,9 +19,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import Users.Korisnik;
 import Users.Vlasnik;
 import enumi.Stanje;
-import najmovi.Najam;
+import platforma.Platforma;
 
 public class UpravljanjeVozilima {
 	//List<Vozilo> svaVozila = new ArrayList<>();
@@ -58,8 +59,6 @@ public class UpravljanjeVozilima {
 							.parseDouble(voziloElement.getElementsByTagName("maxTezina").item(0).getTextContent());
 					Stanje stanje = Stanje
 							.valueOf(voziloElement.getElementsByTagName("stanje").item(0).getTextContent());
-					boolean zauzeto = Boolean
-							.parseBoolean(voziloElement.getElementsByTagName("zauzeto").item(0).getTextContent());
 
 					Element vlasnikElement = (Element) voziloElement.getElementsByTagName("vlasnik").item(0);
 					String vlasnikUsername = vlasnikElement.getElementsByTagName("username").item(0).getTextContent();
@@ -241,7 +240,7 @@ public class UpravljanjeVozilima {
 		return null;
 	}
 
-	public void pretragaVozila() throws XMLParseException {
+	public void pretragaVozila(Korisnik k) throws XMLParseException {
 		Scanner pretragaInput = new Scanner(System.in);
 		System.out.println("Izaberite nacin na koji zelite da pretrazite vozilo");
 		System.out.println("1. preko tipa vozila /n" + "2. Preko zauzetosti /n" + "3. Po servisu");
@@ -250,19 +249,19 @@ public class UpravljanjeVozilima {
 		case 1: 
 			System.out.print("Trenutno imamo 2 tipa vozila bicikl i trotinet. Izaberite jedan od njih");
 			String tip = pretragaInput.nextLine();
-			pretragaPoTip(tip);
+			pretragaPoTip(tip, k);
 			break;
 		case 2:
 			System.out.println("Unesite 'zauzeto' ako zelite da vidite zauzeta vozila.");
 			System.out.println("Unesite 'slobodno' ako zelite da vidite slobodna vozila.");
 			String zauzeto=pretragaInput.nextLine();
-			pretragaPoZauzetosti(zauzeto);
+			pretragaPoZauzetosti(zauzeto,k);
 			break;
 		case 3:
 			System.out.print("Unesite 1 ako zelite da vidite vozila koja su servisirana.");
 			System.out.print("Unesite 2 ako zelite da vidite vozila koja nisu servisirana");
 			int servis=pretragaInput.nextInt();
-			pretragaPoServisu(servis);
+			pretragaPoServisu(servis,k);
 			break;			
 		default:
 			System.out.println("Pogresan unos probajte ponovo");
@@ -271,7 +270,7 @@ public class UpravljanjeVozilima {
 		pretragaInput.close();
 	}
 
-	public void pretragaPoTip(String tip) throws XMLParseException {
+	private void pretragaPoTip(String tip,Korisnik korisnik) throws XMLParseException {
 		List<Vozilo> svaVozila=ucitajVozila();
 		List<Vozilo> vozilaTipa = new ArrayList<Vozilo>();
 		for (Vozilo v : svaVozila) {
@@ -280,9 +279,10 @@ public class UpravljanjeVozilima {
 			}
 		}
 		System.out.println(vozilaTipa);
+		Platforma.meniZaKorisnika(korisnik);
 	}
 
-	public void pretragaPoZauzetosti(String zauzetost) throws XMLParseException {
+	private void pretragaPoZauzetosti(String zauzetost, Korisnik korisnik) throws XMLParseException {
 		if (!Arrays.asList("zauzeto", "slobodno").contains(zauzetost.toLowerCase())) {
 			System.out.println("Neispravan unos! Unesite 'zauzeto' ili 'slobodno' kako bismte pretrazili");
 			return;
@@ -299,7 +299,7 @@ public class UpravljanjeVozilima {
 		System.out.println(vozilaZauzetosti);
 	}
 
-	public void pretragaPoServisu(int servis) throws XMLParseException {
+	private void pretragaPoServisu(int servis,Korisnik korisnik) throws XMLParseException {
 		List<Vozilo> svaVozila=ucitajVozila();
 		List<Vozilo> vozilaServis = new ArrayList<Vozilo>();
 		boolean odabir = false;
@@ -314,7 +314,6 @@ public class UpravljanjeVozilima {
 			System.out.println("Neispravan usno. Unesite 1 ili 2.");
 			return;
 		}
-
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -348,7 +347,7 @@ public class UpravljanjeVozilima {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		Platforma.meniZaKorisnika(korisnik);
 	}
 
 }

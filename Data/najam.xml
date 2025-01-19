@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<najmovi>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><najmovi>
   <najam>
     <idNajma>1345</idNajma>
     <korisnickoIme>mirko_d</korisnickoIme>
@@ -7,7 +6,7 @@
     <IdVozila>202</IdVozila>
     <cenaPoSatu>150.0</cenaPoSatu>
     <datumKreiranjNajma>14.01.2025 15:12</datumKreiranjNajma>
-    <datumKrajaNajma />
+    <datumKrajaNajma>18.01.2025 22:55</datumKrajaNajma>
     <servis>false</servis>
   </najam>
-</najmovi>
+<najam><idNajma>0</idNajma><korisnickoIme>mirko_d</korisnickoIme><tipVozila>Trotinet</tipVozila><IdVozila>3</IdVozila><cenaPoSatu>300.0</cenaPoSatu><datumKreiranjNajma>18.01.2025 23:46</datumKreiranjNajma><datumKrajaNajma/><servis>false</servis></najam><najam><idNajma>0</idNajma><korisnickoIme>mirko_d</korisnickoIme><tipVozila>Trotinet</tipVozila><IdVozila>3</IdVozila><cenaPoSatu>300.0</cenaPoSatu><datumKreiranjNajma>18.01.2025 23:47</datumKreiranjNajma><datumKrajaNajma/><servis>false</servis></najam></najmovi>

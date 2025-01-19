@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
 
 import kartica.Kartica;
 import najmovi.Najam;
+import platforma.Platforma;
 import vozila.Iznajmljivo;
 import vozila.UpravljanjeVozilima;
 import vozila.Vozilo;
@@ -52,7 +53,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 	}
 
 	@Override
-	public Najam unajmi(List<Vozilo> slobodnaVozila) {
+	public Najam unajmi(List<Vozilo> slobodnaVozila) throws XMLParseException {
 		Scanner odabirVozila = new Scanner(System.in);
 		Najam najam = null;
 		int brojVozila = 0;
@@ -68,7 +69,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 			System.out.println("Odaberite vozilo koje zelite da iznajmite");
 			for (Vozilo v : slobodnaVozila) {
 				brojVozila++;
-				System.out.println(brojVozila + ". " + " Cena po satu " + v.getCenaPoSatu() + " Maksimalna tezina "
+				System.out.println(brojVozila + ". "+v.tipVozila() + " Cena po satu " + v.getCenaPoSatu() + " Maksimalna tezina "
 						+ v.getMaxTezina());
 			}
 
@@ -96,6 +97,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		najamUDatoteku(najam);
 		this.nsgoKartica.dodajUIstoriju(najam);
 		odabirVozila.close();
+		Platforma.meniZaKorisnika(this);
 		return najam;
 	}
 
@@ -238,55 +240,62 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 	public String toString() {
 		return "Iznajmljivac { Korisnicko ime= '" + getUsername() + this.nsgoKartica.toString() + " }";
 	}
+	
+	public void proveriSredstva() {
+		System.out.println("Imate "+this.nsgoKartica.getRaspolozivaSredstva() +" sredstava");
+	}
 
-	public void dodajSredstva(){
+	public void dodajSredstva() throws XMLParseException {
 		System.out.println("Unesite koliko sredstava zelite da dodate");
-		
-		Scanner sredstvaInput=new Scanner(System.in);
-		double novaSredstva=0.0;
-		int idKartice=this.nsgoKartica.getId();
-		boolean karticaPronadjena=false;
-		
-		do {
-		double sredstva=sredstvaInput.nextInt();
-		novaSredstva=this.nsgoKartica.setSredstava(sredstva);
-		}while(this.nsgoKartica.getRaspolozivaSredstva() >0);
-		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			File kariceFile = new File("Data/kartice.xml");
 
-			Document doc = dBuilder.parse(kariceFile);
-			NodeList karticeList = doc.getElementsByTagName("kartice");
+		Scanner sredstvaInput = new Scanner(System.in);
+		double novaSredstva = 0.0;
+		int idKartice = this.nsgoKartica.getId();
+		boolean karticaPronadjena = false;
 
-			for (int i = 0; i < karticeList.getLength(); i++) {
-				Node karticaNode = karticeList.item(i);
+		double sredstva = sredstvaInput.nextInt();
+		novaSredstva = this.nsgoKartica.setSredstava(sredstva);
 
-				if (karticaNode.getNodeType() == Node.ELEMENT_NODE) {
-					Element karticaElement = (Element) karticaNode;
-					int karticaId = Integer
-							.parseInt(karticaElement.getElementsByTagName("id").item(0).getTextContent());
-					if (karticaId == idKartice) {
-						karticaPronadjena=true;
-						Element sredstvaElement = (Element) karticaElement.getElementsByTagName("raspolozivaSredstva")
-								.item(0);
-						sredstvaElement.setTextContent(String.valueOf(novaSredstva));
-						break;
+		if (novaSredstva > 0) {
+			try {
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+				File kariceFile = new File("Data/kartice.xml");
+
+				Document doc = dBuilder.parse(kariceFile);
+				NodeList karticeList = doc.getElementsByTagName("kartice");
+
+				for (int i = 0; i < karticeList.getLength(); i++) {
+					Node karticaNode = karticeList.item(i);
+
+					if (karticaNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element karticaElement = (Element) karticaNode;
+						int karticaId = Integer
+								.parseInt(karticaElement.getElementsByTagName("id").item(0).getTextContent());
+						if (karticaId == idKartice) {
+							karticaPronadjena = true;
+							Element sredstvaElement = (Element) karticaElement
+									.getElementsByTagName("raspolozivaSredstva").item(0);
+							sredstvaElement.setTextContent(String.valueOf(novaSredstva));
+							break;
+						}
 					}
 				}
+				if (!karticaPronadjena) {
+					System.out.println("Kartica sa ID-om " + idKartice + " nije pronadjena");
+				}
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = new StreamResult(new File("Data/kartice.xml"));
+				transformer.transform(source, result);
+				System.out.print("Sredstva su uneta na karticu "+ this.nsgoKartica.getRaspolozivaSredstva());
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			if(!karticaPronadjena) {
-				System.out.println("Kartica sa ID-om "+idKartice+" nije pronadjena");
-			}
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File("Data/kartice.xml"));
-			transformer.transform(source, result);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		sredstvaInput.close();
+		Platforma.meniZaKorisnika(this);
 	}
 
 	public List<Vozilo> iznajmljenaVozila() throws XMLParseException {
@@ -441,9 +450,10 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 			System.out.println("Uspesno vraceno vozilo");
 			
 		}
-		azurirajKarticuSredstva(izabranoVozilo.getId(),novaRaspolozivaSredstva);
-		// kreirati metodu koja u najam.xml stavlja vreme vracanja vozila
+		azurirajKarticuSredstva(this.nsgoKartica.getId(),novaRaspolozivaSredstva);
+		postaviKranjeVreme();
 		izborInput.close();
+		Platforma.meniZaKorisnika(this);
 	}
 
 	// prikaz istorije iznajmljivanja

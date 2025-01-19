@@ -20,7 +20,6 @@ public class Vlasnik extends Korisnik{
 		List<Vozilo>vlasnikovaVozila= upravljanjeVozilima.vlasnikovaVozila(getUsername(), getPassword());
 		for(Vozilo vozilo: vlasnikovaVozila) {
 			if(vozilo.getStanje()==Stanje.Neupotrebljivo) {
-				// treba da se obrise
 				upravljanjeVozilima.obrisiVozilo(vozilo.getId());
 			}
 		}

@@ -32,7 +32,7 @@ public class Serviser extends Korisnik implements Odrzavanje{
 	
 	public void pregledanjeVozila() throws XMLParseException {
 		Scanner izborInput=new Scanner(System.in);
-		UpravljanjeVozilima upravljanjeVozilima=new UpravljanjeVozilima();
+		//UpravljanjeVozilima upravljanjeVozilima=new UpravljanjeVozilima();
 		List<Vozilo>vozilaZaPregled=neServisiranaVozila();
 		
 		int brojVozila=0;

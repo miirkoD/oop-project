@@ -1,14 +1,11 @@
 package kartica;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Set;
 
 import Users.Iznajmljivac;
@@ -23,7 +20,7 @@ public class Kartica {
 	private double raspolozivaSredstva;
 	private Vozilo voziloAktivno;
 	
-	private List<Najam> istorijaIznajmljivanja;
+	private List<Najam> istorijaIznajmljivanja=new ArrayList<>();
 	
 	private static Set<Integer>iskorisceniIDovi=new HashSet<>();
 	private static Random random=new Random();
@@ -80,10 +77,10 @@ public class Kartica {
 		return id;
 	}
 	public boolean jeAktivna() { //metoda koja vraca da li je kartica aktivna
-		DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+		//DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 		try {
-			LocalDate datumDoLocalDate=LocalDate.parse(datumDo.toString(),formatter);
-			return LocalDate.now().isBefore(datumDoLocalDate);
+//			LocalDateTime datumDoLocalDate=LocalDateTime.parse(datumDo.toString(),formatter);
+			return LocalDateTime.now().isBefore(datumDo);
 		}catch(DateTimeParseException e) {
 			System.out.println("Greska prilikom parsiranja datuma: "+ e.getMessage());
 			return false;

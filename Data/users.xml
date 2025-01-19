@@ -1,17 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <korisnici>
-	<korisnik>
-		<korisnickoIme>mirko_d</korisnickoIme>
-		<lozinka>pass123</lozinka>
-		<tipKorisnika>iznajmljivac</tipKorisnika>
-	</korisnik>
-	<korisnik>
-		<korisnickoIme>tijana_p</korisnickoIme>
-		<lozinka>pass123</lozinka>
-		<tipKorisnika>serviser</tipKorisnika>
-	</korisnik>
-	<korisnik>
-		<korisnickoIme>marko_m</korisnickoIme>
-		<lozinka>sifra</lozinka>
-		<tipKorisnika>vlasnik</tipKorisnika>
-	</korisnik>
+  <korisnik>
+    <korisnickoIme>mirko_d</korisnickoIme>
+    <lozinka>pass123</lozinka>
+    <tipKorisnika>iznajmljivac</tipKorisnika>
+  </korisnik>
+  <korisnik>
+    <korisnickoIme>tijana_p</korisnickoIme>
+    <lozinka>pass123</lozinka>
+    <tipKorisnika>serviser</tipKorisnika>
+  </korisnik>
+  <korisnik>
+    <korisnickoIme>marko_m</korisnickoIme>
+    <lozinka>sifra</lozinka>
+    <tipKorisnika>vlasnik</tipKorisnika>
+  </korisnik>
+  <korisnik>
+    <korisnickoIme>zika</korisnickoIme>
+    <lozinka>test1</lozinka>
+    <tipKorisnika>serviser</tipKorisnika>
+  </korisnik>
 </korisnici>
