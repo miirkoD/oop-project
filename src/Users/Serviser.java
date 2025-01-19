@@ -73,7 +73,7 @@ public class Serviser extends Korisnik implements Odrzavanje{
 		
 		izborInput.close();
 	}
-	public List<Vozilo>neServisiranaVozila() throws XMLParseException{
+	private List<Vozilo>neServisiranaVozila() throws XMLParseException{
 		List<Vozilo> vozilaBezServisa = new ArrayList<Vozilo>();
 		UpravljanjeVozilima upravljanjeVozilima=new UpravljanjeVozilima();
 		List<Vozilo>svaVozila=upravljanjeVozilima.ucitajVozila();
@@ -113,7 +113,7 @@ public class Serviser extends Korisnik implements Odrzavanje{
 		return vozilaBezServisa;
 	}
 	
-	public void promeniStanje(Stanje stanje,int idVozila) {
+	private void promeniStanje(Stanje stanje,int idVozila) {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -215,6 +215,5 @@ public class Serviser extends Korisnik implements Odrzavanje{
 		}
 		izborInput.close();
 	}
-
 
 }

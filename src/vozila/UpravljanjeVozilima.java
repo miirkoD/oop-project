@@ -83,7 +83,6 @@ public class UpravljanjeVozilima {
 
 					if (vozilo != null) {
 						svaVozila.add(vozilo);
-//						System.out.print("ovo su sva vozila "+svaVozila); //provera da li se vozila dodaju u listu
 					}
 				}
 			}

@@ -46,7 +46,7 @@ public class Kartica {
 		return istorijaIznajmljivanja;
 	}
 	
-	public int generisiIDKartice() {
+	private int generisiIDKartice() {
 		int id;
 		do {
 			id=random.nextInt(10000);
@@ -59,47 +59,42 @@ public class Kartica {
 		istorijaIznajmljivanja.add(najam);
 	}
 
-	public LocalDateTime KreirajDatumOd() {
+	private LocalDateTime KreirajDatumOd() {
 		LocalDateTime danas=LocalDateTime.now();
 		datumOd = danas;
 		datumDo=danas.plusYears(1);
 		return datumOd;
 	}
-	public LocalDateTime KreirajDatumDo() {
+	private LocalDateTime KreirajDatumDo() {
 		LocalDateTime danas=LocalDateTime.now();
 		datumDo=danas.plusYears(1);
 		return datumDo;
 	}
 	
-	
-	
 	public int getId() {
 		return id;
 	}
 	public boolean jeAktivna() { //metoda koja vraca da li je kartica aktivna
-		//DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 		try {
-//			LocalDateTime datumDoLocalDate=LocalDateTime.parse(datumDo.toString(),formatter);
 			return LocalDateTime.now().isBefore(datumDo);
 		}catch(DateTimeParseException e) {
 			System.out.println("Greska prilikom parsiranja datuma: "+ e.getMessage());
 			return false;
 		}
-		
 	}
 	
 	public LocalDateTime getDatumDo() {
 		return datumDo;
 	}
+	
 	@Override
 	public String toString() {
 		return "Kartica {Korisnik "+this.iznajmljivac.getUsername()+" Id kartice "+ this.id+"Vazi do "+this.datumDo;
 	}
 	
 	public void isVoziloAktivno(Vozilo v) {
-		//Scanner vratiInput=new Scanner(System.in);
 		if(this.voziloAktivno==null) {
-			System.out.println("Prvo iznajmljivanje vozila na ovom nalogu");
+			System.out.println("Novo iznajmljivanje vozila na ovom nalogu");
 			this.voziloAktivno=v;
 		}else {
 			this.voziloAktivno=v;
@@ -118,7 +113,6 @@ public class Kartica {
 		return raspolozivaSredstva;
 	}
 	
-	//metoda za vracanje sredstava stavljena u klasu kartica
 	public double setSredstava(double sredstva) {
 		return this.raspolozivaSredstva+=sredstva;
 		

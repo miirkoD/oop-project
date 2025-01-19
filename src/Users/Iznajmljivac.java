@@ -46,7 +46,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 
 	// kreirati metode koje su vezane za iznajmljivaca
 
-	public String formatirajVreme(LocalDateTime vreme) {
+	private String formatirajVreme(LocalDateTime vreme) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 		String formiranoVreme = vreme.format(formatter);
 		return formiranoVreme;
@@ -101,7 +101,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		return najam;
 	}
 
-	public void azurirajKarticuAktivnoVozilo(int idKartice, int idVozila) {
+	private void azurirajKarticuAktivnoVozilo(int idKartice, int idVozila) {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -134,7 +134,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 			e.printStackTrace();
 		}
 	}
-	public void azurirajKarticuSredstva(int idKartice, double novaRaspolozivaSredstva) {
+	private void azurirajKarticuSredstva(int idKartice, double novaRaspolozivaSredstva) {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -169,7 +169,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		}
 	}
 
-	public void najamUDatoteku(Najam najam) {
+	private void najamUDatoteku(Najam najam) {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -298,7 +298,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		Platforma.meniZaKorisnika(this);
 	}
 
-	public List<Vozilo> iznajmljenaVozila() throws XMLParseException {
+	private List<Vozilo> iznajmljenaVozila() throws XMLParseException {
 		UpravljanjeVozilima upravljanjeVozilima = new UpravljanjeVozilima();
 		List<Vozilo> svaVozila = upravljanjeVozilima.ucitajVozila();
 
@@ -338,7 +338,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		return iznajmljenaVozila;
 	}
 
-	public double izracunajCenuNajma(double cenaPoSatu) {
+	private double izracunajCenuNajma(double cenaPoSatu) {
 		LocalDateTime datumPocetka=null;
 		LocalDateTime vremeKraja=LocalDateTime.now();
 		try {
@@ -374,7 +374,7 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		
 	}
 
-	public void postaviKranjeVreme() {
+	private void postaviKranjeVreme() {
 		String korisnickoIme=this.getUsername();
 		LocalDateTime vremeKraja=LocalDateTime.now();
 		String formatiranoVreme=formatirajVreme(vremeKraja);
@@ -456,5 +456,4 @@ public class Iznajmljivac extends Korisnik implements Iznajmljivo {
 		Platforma.meniZaKorisnika(this);
 	}
 
-	// prikaz istorije iznajmljivanja
 }
