@@ -193,6 +193,38 @@ public class UpravljanjeVozilima {
 			e.printStackTrace();
 		}
 	}
+	public void voziloSlobodno(Vozilo vozilo) {
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			File voziloFile = new File("Data/vozila.xml");
+
+			Document doc = dBuilder.parse(voziloFile);
+			NodeList vozilaList = doc.getElementsByTagName("vozilo");
+
+			for (int i = 0; i < vozilaList.getLength(); i++) {
+				Node voziloNode = vozilaList.item(i);
+
+				if (voziloNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element voziloElement = (Element) voziloNode;
+					int id = Integer.parseInt(voziloElement.getElementsByTagName("id").item(0).getTextContent());
+					if (id == vozilo.getId()) {
+						Element zauzetoElement = (Element) voziloElement.getElementsByTagName("zauzeto").item(0);
+						zauzetoElement.setTextContent("false");
+						break;
+					}
+				}
+			}
+
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File("Data/vozila.xml"));
+			transformer.transform(source, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void azurirajStanjeVozila(Vozilo vozilo) {
 		try {
@@ -242,23 +274,25 @@ public class UpravljanjeVozilima {
 	public void pretragaVozila(Korisnik k) throws XMLParseException {
 		Scanner pretragaInput = new Scanner(System.in);
 		System.out.println("Izaberite nacin na koji zelite da pretrazite vozilo");
-		System.out.println("1. preko tipa vozila /n" + "2. Preko zauzetosti /n" + "3. Po servisu");
+		System.out.println(" 1. preko tipa vozila" + "\n 2. Preko zauzetosti" + "\n 3. Po servisu");
 		int odabir = pretragaInput.nextInt();
 		switch (odabir) {
 		case 1: 
-			System.out.print("Trenutno imamo 2 tipa vozila bicikl i trotinet. Izaberite jedan od njih");
+			System.out.println("Trenutno imamo 2 tipa vozila bicikl i trotinet. Izaberite jedan od njih");
+			pretragaInput.nextLine();
 			String tip = pretragaInput.nextLine();
 			pretragaPoTip(tip, k);
 			break;
 		case 2:
 			System.out.println("Unesite 'zauzeto' ako zelite da vidite zauzeta vozila.");
 			System.out.println("Unesite 'slobodno' ako zelite da vidite slobodna vozila.");
+			pretragaInput.nextLine();
 			String zauzeto=pretragaInput.nextLine();
 			pretragaPoZauzetosti(zauzeto,k);
 			break;
 		case 3:
-			System.out.print("Unesite 1 ako zelite da vidite vozila koja su servisirana.");
-			System.out.print("Unesite 2 ako zelite da vidite vozila koja nisu servisirana");
+			System.out.println("Unesite 1 ako zelite da vidite vozila koja su servisirana.");
+			System.out.println("Unesite 2 ako zelite da vidite vozila koja nisu servisirana");
 			int servis=pretragaInput.nextInt();
 			pretragaPoServisu(servis,k);
 			break;			
@@ -273,11 +307,16 @@ public class UpravljanjeVozilima {
 		List<Vozilo> svaVozila=ucitajVozila();
 		List<Vozilo> vozilaTipa = new ArrayList<Vozilo>();
 		for (Vozilo v : svaVozila) {
-			if (v.tipVozila().equals(tip)) {
+			if (v.tipVozila().equals(tip.toLowerCase())) {
 				vozilaTipa.add(v);
 			}
 		}
-		System.out.println(vozilaTipa);
+		if(vozilaTipa.isEmpty()) {
+			System.out.println("Trenutno nemamo "+tip);
+		}
+		else {
+			System.out.println(vozilaTipa);
+		}
 		Platforma.meniZaKorisnika(korisnik);
 	}
 
@@ -295,7 +334,13 @@ public class UpravljanjeVozilima {
 				vozilaZauzetosti.add(v);
 			}
 		}
-		System.out.println(vozilaZauzetosti);
+		if(vozilaZauzetosti.isEmpty()) {
+			System.out.println("Trenutno nemamo "+ zauzetost+" vozila");
+		}
+		else {			
+			System.out.println(vozilaZauzetosti);
+		}
+		Platforma.meniZaKorisnika(korisnik);
 	}
 
 	private void pretragaPoServisu(int servis,Korisnik korisnik) throws XMLParseException {

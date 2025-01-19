@@ -27,9 +27,9 @@ abstract public class Vozilo {
 
 	public String tipVozila() {
 		if (this instanceof Bicikl) {
-			return "Bicikl";
+			return "bicikl";
 		} else if (this instanceof Trotinet) {
-			return "Trotinet";
+			return "trotinet";
 		} else {
 			return "Nepoznato vozilo";
 		}
@@ -41,6 +41,8 @@ abstract public class Vozilo {
 
 	public void setZauzeto(boolean zauzeto) {
 		this.zauzeto = zauzeto;
+		UpravljanjeVozilima upravljanjeVozilima=new UpravljanjeVozilima();
+		upravljanjeVozilima.voziloSlobodno(this);
 	}
 
 	public boolean isZauzeto() {

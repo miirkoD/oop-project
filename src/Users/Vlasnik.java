@@ -24,7 +24,5 @@ public class Vlasnik extends Korisnik{
 			}
 		}
 	}
-	
-
 	//stavljanje vozila van upotrebe
 }
